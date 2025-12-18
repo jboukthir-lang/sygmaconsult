@@ -27,11 +27,11 @@ export default function Header() {
                 <div className="flex h-20 items-center justify-between">
                     <Link className="flex items-center gap-3" href="/">
                         <Image
-                            src="/logo.svg"
+                            src="/logo.png"
                             alt="Sygma Consult"
-                            width={140}
-                            height={45}
-                            className="h-10 w-auto"
+                            width={150}
+                            height={150}
+                            className="h-12 w-auto"
                             priority
                         />
                     </Link>

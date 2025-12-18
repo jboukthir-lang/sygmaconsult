@@ -123,19 +123,19 @@ export default function AdminSidebar() {
       `}>
         {/* Logo */}
         <div className="p-4 sm:p-6 border-b border-white/10">
-          <Link href="/admin" className="flex items-center justify-center" onClick={() => setIsOpen(false)}>
-            <div className="relative w-full h-12 flex items-center justify-center">
+          <Link href="/admin" className="flex flex-col items-center justify-center gap-2" onClick={() => setIsOpen(false)}>
+            <div className="relative w-20 h-20 flex items-center justify-center bg-white rounded-xl p-2">
               <Image
-                src="/logo.svg"
+                src="/logo.png"
                 alt="Sygma Consult Admin"
-                width={160}
-                height={48}
-                className="brightness-0 invert"
+                width={80}
+                height={80}
+                className="object-contain"
                 priority
               />
             </div>
+            <p className="text-xs text-blue-200 text-center font-medium">Management Portal</p>
           </Link>
-          <p className="text-xs text-blue-200 text-center mt-2 font-medium">Management Portal</p>
         </div>
 
         {/* Navigation */}

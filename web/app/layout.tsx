@@ -19,15 +19,16 @@ export const metadata: Metadata = {
   description: "Your trusted partner in Paris and Tunis for digital transformation, legal consulting, and strategic growth.",
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/icon.svg', type: 'image/svg+xml', sizes: '32x32' },
+      { url: '/favicon.png', sizes: '150x150', type: 'image/png' },
+      { url: '/logo.png', sizes: '150x150', type: 'image/png' },
     ],
-    apple: '/icon.svg',
+    apple: '/logo.png',
+    shortcut: '/favicon.png',
   },
   openGraph: {
     title: "Sygma Consult | Digital Transformation & Strategy",
     description: "Your trusted partner in Paris and Tunis for digital transformation, legal consulting, and strategic growth.",
-    images: ['/logo.svg'],
+    images: ['/logo.png'],
     type: 'website',
     locale: 'fr_FR',
     alternateLocale: ['ar_TN', 'en_US'],
