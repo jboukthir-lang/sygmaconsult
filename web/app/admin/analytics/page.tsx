@@ -66,14 +66,14 @@ export default function AnalyticsPage() {
       const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
       const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
 
-      const usersThisMonth = users?.filter(u =>
+      const usersThisMonth = (users || []).filter(u =>
         new Date(u.created_at) >= thisMonthStart
-      ).length || 0;
+      ).length;
 
-      const usersLastMonth = users?.filter(u =>
+      const usersLastMonth = (users || []).filter(u =>
         new Date(u.created_at) >= lastMonthStart &&
         new Date(u.created_at) <= lastMonthEnd
-      ).length || 0;
+      ).length;
 
       const userGrowth = usersLastMonth > 0
         ? ((usersThisMonth - usersLastMonth) / usersLastMonth) * 100
@@ -84,27 +84,25 @@ export default function AnalyticsPage() {
         .from('bookings')
         .select('status, created_at');
 
-      const bookingsThisMonth = bookings?.filter(b =>
+      const bookingsThisMonth = (bookings || []).filter(b =>
         new Date(b.created_at) >= thisMonthStart
-      ).length || 0;
+      ).length;
 
-      const confirmedBookings = bookings?.filter(b => b.status === 'confirmed').length || 0;
+      const confirmedBookings = (bookings || []).filter(b => b.status === 'confirmed').length;
       const conversionRate = bookings && bookings.length > 0
         ? (confirmedBookings / bookings.length) * 100
         : 0;
 
       // Fetch consultations data (from bookings as proxy)
-      const consultationsRevenue = bookings?.filter(b =>
-        b.status === 'confirmed'
-      ).length * 150 || 0; // Assuming 150€ per consultation
+      const consultationsRevenue = confirmedBookings * 150; // Using already calculated confirmedBookings
 
       // Fetch messages data
       const { data: messages } = await supabase
         .from('contacts')
         .select('status, created_at');
 
-      const newMessages = messages?.filter(m => m.status === 'new').length || 0;
-      const respondedMessages = messages?.filter(m => m.status === 'responded').length || 0;
+      const newMessages = (messages || []).filter(m => m.status === 'new').length;
+      const respondedMessages = (messages || []).filter(m => m.status === 'responded').length;
       const responseRate = messages && messages.length > 0
         ? (respondedMessages / messages.length) * 100
         : 0;
@@ -176,11 +174,10 @@ export default function AnalyticsPage() {
             <button
               key={range.value}
               onClick={() => setTimeRange(range.value as any)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                timeRange === range.value
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${timeRange === range.value
                   ? 'bg-[#001F3F] text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+                }`}
             >
               {range.label}
             </button>
