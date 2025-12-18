@@ -95,8 +95,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'your-google-site-verification-code',
-    yandex: 'your-yandex-verification-code',
+    google: 'c7I_RSypaQKRXKNbGMD6C9S5bcnEuRzMmlk7prvY6tQ',
   },
   alternates: {
     canonical: 'https://sygmaconsult.vercel.app',
