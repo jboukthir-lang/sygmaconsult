@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { GOOGLE_SCOPES, getAuthUrl } from '@/lib/google-auth';
 
 export default function AdminSettings() {
   const searchParams = useSearchParams();
@@ -34,9 +33,15 @@ export default function AdminSettings() {
     }
   }, [searchParams]);
 
-  const handleConnectGoogle = () => {
-    const authUrl = getAuthUrl(GOOGLE_SCOPES);
-    window.location.href = authUrl;
+  const handleConnectGoogle = async () => {
+    // Get auth URL from API endpoint
+    try {
+      const res = await fetch('/api/auth/google/auth-url');
+      const data = await res.json();
+      window.location.href = data.authUrl;
+    } catch (error) {
+      setMessage('Failed to get Google auth URL');
+    }
   };
 
   const handleDisconnectGoogle = async () => {
