@@ -42,7 +42,7 @@ export default function LoginPage() {
       } else if (error.code === 'auth/too-many-requests') {
         setError('Too many failed attempts. Please try again later.');
       } else {
-        setError('Failed to sign in. Please try again.');
+        setError(error.message || 'Failed to sign in. Please try again.');
       }
     } finally {
       setIsLoading(false);
