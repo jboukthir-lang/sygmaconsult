@@ -3,39 +3,42 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
+import { t } from '@/lib/translations';
 import { User, Calendar, FileText, Bell, Settings, LogOut } from 'lucide-react';
-
-const menuItems = [
-  {
-    title: 'My Profile',
-    href: '/profile',
-    icon: User,
-  },
-  {
-    title: 'My Bookings',
-    href: '/profile/bookings',
-    icon: Calendar,
-  },
-  {
-    title: 'My Documents',
-    href: '/profile/documents',
-    icon: FileText,
-  },
-  {
-    title: 'Notifications',
-    href: '/profile/notifications',
-    icon: Bell,
-  },
-  {
-    title: 'Settings',
-    href: '/profile/settings',
-    icon: Settings,
-  },
-];
 
 export default function ProfileSidebar() {
   const pathname = usePathname();
   const { user, signOut } = useAuth();
+  const { language } = useLanguage();
+
+  const menuItems = [
+    {
+      title: t('profile.myProfile', language),
+      href: '/profile',
+      icon: User,
+    },
+    {
+      title: t('profile.myBookings', language),
+      href: '/profile/bookings',
+      icon: Calendar,
+    },
+    {
+      title: t('profile.myDocuments', language),
+      href: '/profile/documents',
+      icon: FileText,
+    },
+    {
+      title: t('profile.notifications', language),
+      href: '/profile/notifications',
+      icon: Bell,
+    },
+    {
+      title: t('profile.settings', language),
+      href: '/profile/settings',
+      icon: Settings,
+    },
+  ];
 
   const handleLogout = async () => {
     try {
@@ -83,11 +86,10 @@ export default function ProfileSidebar() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                    isActive
-                      ? 'bg-[#001F3F] text-white font-semibold'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive
+                    ? 'bg-[#001F3F] text-white font-semibold'
+                    : 'text-gray-700 hover:bg-gray-100'
+                    }`}
                 >
                   <Icon className="h-5 w-5" />
                   <span>{item.title}</span>
@@ -105,7 +107,7 @@ export default function ProfileSidebar() {
           className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors w-full"
         >
           <LogOut className="h-5 w-5" />
-          <span>Logout</span>
+          <span>{t('auth.logout', language)}</span>
         </button>
       </div>
     </aside>
