@@ -73,8 +73,13 @@ export default function AdminDocumentsPage() {
       }));
 
       setDocuments(transformedDocs as any);
-    } catch (error) {
-      console.error('Error fetching documents:', error);
+    } catch (error: any) {
+      console.error('Error fetching documents:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        error
+      });
     } finally {
       setLoading(false);
     }
@@ -237,11 +242,10 @@ export default function AdminDocumentsPage() {
               <button
                 key={filter.value}
                 onClick={() => setFilterType(filter.value as any)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  filterType === filter.value
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filterType === filter.value
                     ? 'bg-[#001F3F] text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                  }`}
               >
                 {filter.label}
               </button>
