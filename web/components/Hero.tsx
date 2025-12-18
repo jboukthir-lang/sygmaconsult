@@ -11,13 +11,9 @@ export default function Hero() {
     const { t } = useLanguage();
     const [heroImageUrl, setHeroImageUrl] = useState<string>('/hero.svg');
 
-    useEffect(() => {
-        fetchHeroImage();
-    }, []);
-
-    async function fetchHeroImage() {
+    const fetchHeroImage = async () => {
         try {
-            const { data, error } = await supabase
+            const { data } = await supabase
                 .from('hero_images')
                 .select('image_url')
                 .eq('is_active', true)
@@ -26,10 +22,15 @@ export default function Hero() {
             if (data && data.image_url) {
                 setHeroImageUrl(data.image_url);
             }
-        } catch (error) {
+        } catch {
             console.log('Using default hero image');
         }
-    }
+    };
+
+    useEffect(() => {
+        fetchHeroImage();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <section className="relative w-full overflow-hidden bg-white">
