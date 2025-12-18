@@ -1,13 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, Phone, LogIn, LogOut, User } from 'lucide-react';
+import { Menu, Phone, LogIn, LogOut, User, X } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
 import NotificationBell from './NotificationBell';
+import { useState } from 'react';
+
 export default function Header() {
     const { t, language, setLanguage } = useLanguage();
     const { user, signOut } = useAuth();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleSignOut = async () => {
         try {
@@ -92,12 +95,60 @@ export default function Header() {
                         >
                             {t.nav.book}
                         </Link>
-                        <button className="md:hidden">
-                            <Menu className="h-6 w-6 text-[#001F3F]" />
+                        <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                            {isMenuOpen ? <X className="h-6 w-6 text-[#001F3F]" /> : <Menu className="h-6 w-6 text-[#001F3F]" />}
                         </button>
                     </div>
                 </div>
             </div>
+
+            {/* Mobile Menu */}
+            {isMenuOpen && (
+                <div className="md:hidden bg-white border-t border-gray-100 p-4 space-y-4 absolute top-20 left-0 w-full shadow-lg z-50">
+                    <nav className="flex flex-col gap-4">
+                        <Link onClick={() => setIsMenuOpen(false)} className="hover:text-[#001F3F] transition-colors font-medium" href="/">{t.nav.home}</Link>
+                        <Link onClick={() => setIsMenuOpen(false)} className="hover:text-[#001F3F] transition-colors font-medium" href="/services">{t.nav.services}</Link>
+                        <Link onClick={() => setIsMenuOpen(false)} className="hover:text-[#001F3F] transition-colors font-medium" href="/about">{t.nav.about}</Link>
+                        <Link onClick={() => setIsMenuOpen(false)} className="hover:text-[#001F3F] transition-colors font-medium" href="/insights">{t.nav.insights}</Link>
+                        <Link onClick={() => setIsMenuOpen(false)} className="hover:text-[#001F3F] transition-colors font-medium" href="/contact">{t.nav.contact}</Link>
+                    </nav>
+                    <div className="flex flex-col gap-4 pt-4 border-t border-gray-100">
+                        <div className="flex gap-4">
+                            <button onClick={() => { setLanguage('en'); setIsMenuOpen(false); }} className={`${language === 'en' ? 'text-[#D4AF37] font-bold' : 'text-gray-500'}`}>EN</button>
+                            <button onClick={() => { setLanguage('fr'); setIsMenuOpen(false); }} className={`${language === 'fr' ? 'text-[#D4AF37] font-bold' : 'text-gray-500'}`}>FR</button>
+                            <button onClick={() => { setLanguage('ar'); setIsMenuOpen(false); }} className={`${language === 'ar' ? 'text-[#D4AF37] font-bold' : 'text-gray-500'}`}>AR</button>
+                        </div>
+                        {user ? (
+                            <div className="flex flex-col gap-3">
+                                <Link
+                                    href="/profile"
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg"
+                                >
+                                    <User className="h-4 w-4 text-[#001F3F]" />
+                                    <span>{user.displayName || user.email}</span>
+                                </Link>
+                                <button
+                                    onClick={() => { handleSignOut(); setIsMenuOpen(false); }}
+                                    className="flex items-center gap-2 p-2 text-red-600"
+                                >
+                                    <LogOut className="h-4 w-4" />
+                                    Sign Out
+                                </button>
+                            </div>
+                        ) : (
+                            <Link
+                                href="/login"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="flex items-center gap-2 p-3 bg-[#001F3F] text-white rounded-lg justify-center font-bold"
+                            >
+                                <LogIn className="h-4 w-4" />
+                                Sign In
+                            </Link>
+                        )}
+                    </div>
+                </div>
+            )}
         </header>
     );
 }
