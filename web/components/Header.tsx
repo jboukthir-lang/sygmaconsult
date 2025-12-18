@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Menu, Phone, LogIn, LogOut, User, X } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
@@ -24,8 +25,15 @@ export default function Header() {
         <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex h-20 items-center justify-between">
-                    <Link className="flex items-center gap-2 font-serif text-2xl font-bold text-[#001F3F]" href="/">
-                        SYGMA<span className="text-[#D4AF37]">CONSULT</span>
+                    <Link className="flex items-center gap-3" href="/">
+                        <Image
+                            src="/logo.svg"
+                            alt="Sygma Consult"
+                            width={140}
+                            height={45}
+                            className="h-10 w-auto"
+                            priority
+                        />
                     </Link>
 
                     <nav className="hidden md:flex gap-8 text-sm font-medium text-[#4A4A4A]">

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
@@ -122,15 +123,19 @@ export default function AdminSidebar() {
       `}>
         {/* Logo */}
         <div className="p-4 sm:p-6 border-b border-white/10">
-          <Link href="/admin" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
-            <div className="w-8 h-8 bg-[#D4AF37] rounded-lg flex items-center justify-center font-bold text-[#001F3F]">
-              S
-            </div>
-            <div>
-              <h1 className="text-base sm:text-lg font-bold">Sygma Admin</h1>
-              <p className="text-xs text-blue-200">Management Portal</p>
+          <Link href="/admin" className="flex items-center justify-center" onClick={() => setIsOpen(false)}>
+            <div className="relative w-full h-12 flex items-center justify-center">
+              <Image
+                src="/logo.svg"
+                alt="Sygma Consult Admin"
+                width={160}
+                height={48}
+                className="brightness-0 invert"
+                priority
+              />
             </div>
           </Link>
+          <p className="text-xs text-blue-200 text-center mt-2 font-medium">Management Portal</p>
         </div>
 
         {/* Navigation */}
