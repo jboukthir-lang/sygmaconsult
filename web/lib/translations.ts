@@ -908,6 +908,21 @@ export const translations = {
       fr: 'Aucune consultation trouvée',
       ar: 'لا توجد استشارات',
     },
+    online: {
+      fr: 'En ligne',
+      ar: 'عبر الإنترنت',
+      en: 'Online',
+    },
+    onsite: {
+      fr: 'En présentiel',
+      ar: 'في الموقع',
+      en: 'On-site',
+    },
+    minutes: {
+      fr: 'minutes',
+      ar: 'دقائق',
+      en: 'minutes',
+    },
   },
 
   // Bookings
@@ -997,6 +1012,21 @@ export const translations = {
       ar: 'لم يتم العثور على حجوزات',
       en: 'No bookings found',
     },
+    online: {
+      fr: 'En ligne',
+      ar: 'عبر الإنترنت',
+      en: 'Online',
+    },
+    onsite: {
+      fr: 'En présentiel',
+      ar: 'في الموقع',
+      en: 'On-site',
+    },
+    minutes: {
+      fr: 'min',
+      ar: 'دقيقة',
+      en: 'min',
+    },
     confirmCancel: {
       fr: 'Êtes-vous sûr de vouloir annuler cette réservation?',
       ar: 'هل أنت متأكد من إلغاء هذا الحجز؟',
@@ -1021,11 +1051,6 @@ export const translations = {
       fr: 'Durée',
       ar: 'المدة',
       en: 'Duration',
-    },
-    minutes: {
-      fr: 'minutes',
-      ar: 'دقائق',
-      en: 'minutes',
     },
     type: {
       fr: 'Type',

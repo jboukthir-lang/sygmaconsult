@@ -2,8 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { supabase } from '@/lib/supabase';
-import { Bell, Check, Trash2, Filter, Loader2 } from 'lucide-react';
+import { t } from '@/lib/translations';
+import {
+  Bell,
+  Check,
+  Trash2,
+  Clock,
+  Filter,
+  MoreVertical,
+  CheckCircle2,
+  AlertCircle,
+  Info,
+  Loader2
+} from 'lucide-react';
 
 interface Notification {
   id: string;
@@ -17,6 +30,7 @@ interface Notification {
 
 export default function NotificationsPage() {
   const { user } = useAuth();
+  const { language } = useLanguage();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [filter, setFilter] = useState<'all' | 'unread' | 'read'>('all');
   const [loading, setLoading] = useState(true);
@@ -199,9 +213,11 @@ export default function NotificationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#001F3F]">Notifications</h1>
+          <h1 className="text-3xl font-bold text-[#001F3F]">{t('profile.notifications', language)}</h1>
           <p className="text-gray-600 mt-1">
-            {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'All caught up!'}
+            {unreadCount > 0
+              ? `${unreadCount} ${language === 'ar' ? 'إشعارات غير مقروءة' : 'unread notifications'}`
+              : t('nav.home', language) === 'الرئيسية' ? 'كل شيء جاهز!' : 'All caught up!'}
           </p>
         </div>
         {unreadCount > 0 && (
@@ -210,7 +226,7 @@ export default function NotificationsPage() {
             className="flex items-center gap-2 px-4 py-2 bg-[#001F3F] text-white rounded-lg hover:bg-[#003366] transition-colors"
           >
             <Check className="h-4 w-4" />
-            Mark all as read
+            {t('admin.markAsRead', language)}
           </button>
         )}
       </div>
@@ -223,33 +239,30 @@ export default function NotificationsPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setFilter('all')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  filter === 'all'
-                    ? 'bg-[#001F3F] text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === 'all'
+                  ? 'bg-[#001F3F] text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
               >
-                All ({notifications.length})
+                {t('common.all', language)} ({notifications.length})
               </button>
               <button
                 onClick={() => setFilter('unread')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  filter === 'unread'
-                    ? 'bg-[#001F3F] text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === 'unread'
+                  ? 'bg-[#001F3F] text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
               >
-                Unread ({unreadCount})
+                {language === 'ar' ? 'غير مقروء' : 'Unread'} ({unreadCount})
               </button>
               <button
                 onClick={() => setFilter('read')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  filter === 'read'
-                    ? 'bg-[#001F3F] text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === 'read'
+                  ? 'bg-[#001F3F] text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
               >
-                Read ({notifications.filter((n) => n.read).length})
+                {language === 'ar' ? 'مقروء' : 'Read'} ({notifications.filter((n) => n.read).length})
               </button>
             </div>
           </div>
@@ -273,17 +286,16 @@ export default function NotificationsPage() {
               {filter === 'unread'
                 ? 'No unread notifications'
                 : filter === 'read'
-                ? 'No read notifications'
-                : 'No notifications yet'}
+                  ? 'No read notifications'
+                  : 'No notifications yet'}
             </p>
           </div>
         ) : (
           filteredNotifications.map((notification) => (
             <div
               key={notification.id}
-              className={`bg-white rounded-xl shadow-sm border transition-all hover:shadow-md ${
-                !notification.read ? 'border-[#001F3F]/20 bg-blue-50/30' : 'border-gray-100'
-              }`}
+              className={`bg-white rounded-xl shadow-sm border transition-all hover:shadow-md ${!notification.read ? 'border-[#001F3F]/20 bg-blue-50/30' : 'border-gray-100'
+                }`}
             >
               <div className="p-6">
                 <div className="flex items-start gap-4">

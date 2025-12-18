@@ -143,31 +143,28 @@ export default function ProfileBookingsPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-2 inline-flex gap-2">
         <button
           onClick={() => setFilter('all')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            filter === 'all'
+          className={`px-4 py-2 rounded-lg transition-colors ${filter === 'all'
               ? 'bg-[#001F3F] text-white'
               : 'text-gray-600 hover:bg-gray-100'
-          }`}
+            }`}
         >
           {t('bookings.all', language)} ({bookings.length})
         </button>
         <button
           onClick={() => setFilter('upcoming')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            filter === 'upcoming'
+          className={`px-4 py-2 rounded-lg transition-colors ${filter === 'upcoming'
               ? 'bg-[#001F3F] text-white'
               : 'text-gray-600 hover:bg-gray-100'
-          }`}
+            }`}
         >
           {t('bookings.upcoming', language)}
         </button>
         <button
           onClick={() => setFilter('past')}
-          className={`px-4 py-2 rounded-lg transition-colors ${
-            filter === 'past'
+          className={`px-4 py-2 rounded-lg transition-colors ${filter === 'past'
               ? 'bg-[#001F3F] text-white'
               : 'text-gray-600 hover:bg-gray-100'
-          }`}
+            }`}
         >
           {t('bookings.past', language)}
         </button>
@@ -195,25 +192,23 @@ export default function ProfileBookingsPage() {
                     <div className="flex items-center gap-3 mb-3 flex-wrap">
                       <h3 className="text-lg font-bold text-[#001F3F]">{booking.topic}</h3>
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          booking.status === 'confirmed'
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${booking.status === 'confirmed'
                             ? 'bg-green-100 text-green-700'
                             : booking.status === 'pending'
-                            ? 'bg-yellow-100 text-yellow-700'
-                            : 'bg-red-100 text-red-700'
-                        }`}
+                              ? 'bg-yellow-100 text-yellow-700'
+                              : 'bg-red-100 text-red-700'
+                          }`}
                       >
                         {booking.status}
                       </span>
                       {booking.payment_status && (
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            booking.payment_status === 'paid'
+                          className={`px-3 py-1 rounded-full text-xs font-semibold ${booking.payment_status === 'paid'
                               ? 'bg-green-100 text-green-700'
                               : booking.payment_status === 'pending'
-                              ? 'bg-yellow-100 text-yellow-700'
-                              : 'bg-red-100 text-red-700'
-                          }`}
+                                ? 'bg-yellow-100 text-yellow-700'
+                                : 'bg-red-100 text-red-700'
+                            }`}
                         >
                           {booking.payment_status}
                         </span>
@@ -227,18 +222,18 @@ export default function ProfileBookingsPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-[#001F3F]" />
-                        <span>{booking.time} ({booking.duration || 30} min)</span>
+                        <span>{booking.time} ({booking.duration || 30} {t('bookings.minutes', language)})</span>
                       </div>
                       <div className="flex items-center gap-2">
                         {booking.is_online ? (
                           <>
                             <Video className="h-4 w-4 text-[#001F3F]" />
-                            <span>Online</span>
+                            <span>{t('bookings.online', language)}</span>
                           </>
                         ) : (
                           <>
                             <MapPin className="h-4 w-4 text-[#001F3F]" />
-                            <span>On-site</span>
+                            <span>{t('bookings.onsite', language)}</span>
                           </>
                         )}
                       </div>
@@ -376,13 +371,12 @@ export default function ProfileBookingsPage() {
                 <div className="col-span-2">
                   <p className="text-sm text-gray-600 mb-1">{t('consultations.status', language)}</p>
                   <span
-                    className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                      selectedBooking.status === 'confirmed'
+                    className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${selectedBooking.status === 'confirmed'
                         ? 'bg-green-100 text-green-700'
                         : selectedBooking.status === 'pending'
-                        ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}
+                          ? 'bg-yellow-100 text-yellow-700'
+                          : 'bg-red-100 text-red-700'
+                      }`}
                   >
                     {selectedBooking.status}
                   </span>
