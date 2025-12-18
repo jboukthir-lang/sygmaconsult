@@ -1,28 +1,31 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://sygmaconsult.com' // Replace with actual domain
+    const baseUrl = 'https://sygmaconsult.vercel.app'
+    const currentDate = new Date()
 
-    // Static routes
-    const routes = [
-        '',
+    // Homepage - Highest priority
+    const homepage = [{
+        url: baseUrl,
+        lastModified: currentDate,
+        changeFrequency: 'daily' as const,
+        priority: 1.0,
+    }]
+
+    // Main pages - High priority
+    const mainPages = [
         '/services',
         '/about',
         '/contact',
         '/book',
-        '/insights',
-        '/careers',
-        '/legal',
-        '/privacy',
-        '/terms',
     ].map((route) => ({
         url: `${baseUrl}${route}`,
-        lastModified: new Date(),
-        changeFrequency: 'monthly' as const,
-        priority: route === '' ? 1 : 0.8,
+        lastModified: currentDate,
+        changeFrequency: 'weekly' as const,
+        priority: 0.9,
     }))
 
-    // Dynamic service routes
+    // Service pages - Very high priority (our main content)
     const services = [
         'strategic',
         'financial-legal',
@@ -32,13 +35,48 @@ export default function sitemap(): MetadataRoute.Sitemap {
         'compliance',
         'digital',
         'real-estate',
-        // 'international' // Merged/Redirected
     ].map((slug) => ({
         url: `${baseUrl}/services/${slug}`,
-        lastModified: new Date(),
+        lastModified: currentDate,
         changeFrequency: 'weekly' as const,
-        priority: 0.9,
+        priority: 0.95,
     }))
 
-    return [...routes, ...services]
+    // Secondary pages - Medium priority
+    const secondaryPages = [
+        '/insights',
+        '/careers',
+        '/appointments',
+    ].map((route) => ({
+        url: `${baseUrl}${route}`,
+        lastModified: currentDate,
+        changeFrequency: 'monthly' as const,
+        priority: 0.7,
+    }))
+
+    // Legal pages - Lower priority
+    const legalPages = [
+        '/legal',
+        '/privacy',
+        '/terms',
+    ].map((route) => ({
+        url: `${baseUrl}${route}`,
+        lastModified: currentDate,
+        changeFrequency: 'yearly' as const,
+        priority: 0.3,
+    }))
+
+    // Auth pages - Low priority
+    const authPages = [
+        '/login',
+        '/signup',
+        '/reset-password',
+    ].map((route) => ({
+        url: `${baseUrl}${route}`,
+        lastModified: currentDate,
+        changeFrequency: 'yearly' as const,
+        priority: 0.2,
+    }))
+
+    return [...homepage, ...mainPages, ...services, ...secondaryPages, ...legalPages, ...authPages]
 }
