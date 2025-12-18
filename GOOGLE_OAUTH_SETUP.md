@@ -22,17 +22,26 @@ Ajoutez ces 2 URIs EXACTEMENT comme indiqué:
 http://localhost:3000/api/auth/google/callback
 ```
 
-**Pour la production Vercel:**
+**Pour la production (domaine principal):**
+```
+https://sygmaconsult.com/api/auth/google/callback
+```
+
+**Pour Vercel (optionnel):**
 ```
 https://sygmaconsult.vercel.app/api/auth/google/callback
 ```
 
 ### Étape 4: Ajouter les "Authorized JavaScript origins"
 
-Ajoutez ces 2 origins:
+Ajoutez ces origins:
 
 ```
 http://localhost:3000
+```
+
+```
+https://sygmaconsult.com
 ```
 
 ```
@@ -60,7 +69,7 @@ Dans votre dashboard Vercel, ajoutez ces variables d'environnement:
 ```
 GOOGLE_CLIENT_ID=votre_client_id_ici
 GOOGLE_CLIENT_SECRET=votre_client_secret_ici
-GOOGLE_REDIRECT_URI=https://sygmaconsult.vercel.app/api/auth/google/callback
+GOOGLE_REDIRECT_URI=https://sygmaconsult.com/api/auth/google/callback
 NEXT_PUBLIC_GOOGLE_CLIENT_ID=votre_client_id_ici
 ```
 
@@ -72,7 +81,9 @@ NEXT_PUBLIC_GOOGLE_CLIENT_ID=votre_client_id_ici
 2. Configurez:
    - **Application name**: Sygma Consult
    - **User support email**: contact@sygma-consult.com
-   - **Authorized domains**: sygmaconsult.vercel.app
+   - **Authorized domains**:
+     - sygmaconsult.com
+     - sygmaconsult.vercel.app
    - **Developer contact**: contact@sygma-consult.com
 
 3. Ajoutez les **Scopes** suivants:
