@@ -261,7 +261,7 @@ export default function AdminUsersPage() {
           title={t('admin.totalUsers', language)}
           value={users.length.toString()}
           icon={Users}
-          trend="+12% from last month"
+          trend={{ value: 12, isPositive: true }}
         />
         <StatsCard
           title={t('admin.adminUsers', language)}
@@ -558,23 +558,21 @@ export default function AdminUsersPage() {
                     {userNotifications.map((notification) => (
                       <div
                         key={notification.id}
-                        className={`p-4 rounded-lg border-2 transition-all ${
-                          !notification.is_read
+                        className={`p-4 rounded-lg border-2 transition-all ${!notification.is_read
                             ? 'bg-blue-50 border-blue-300 shadow-sm'
                             : 'bg-white border-gray-200'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-start gap-3">
                           <div
-                            className={`mt-1 w-3 h-3 rounded-full flex-shrink-0 ${
-                              notification.type === 'success'
+                            className={`mt-1 w-3 h-3 rounded-full flex-shrink-0 ${notification.type === 'success'
                                 ? 'bg-green-500'
                                 : notification.type === 'error'
-                                ? 'bg-red-500'
-                                : notification.type === 'warning'
-                                ? 'bg-yellow-500'
-                                : 'bg-blue-500'
-                            }`}
+                                  ? 'bg-red-500'
+                                  : notification.type === 'warning'
+                                    ? 'bg-yellow-500'
+                                    : 'bg-blue-500'
+                              }`}
                           />
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
