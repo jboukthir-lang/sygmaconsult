@@ -4,9 +4,32 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export default function Hero() {
     const { t } = useLanguage();
+    const [heroImageUrl, setHeroImageUrl] = useState<string>('/hero.svg');
+
+    useEffect(() => {
+        fetchHeroImage();
+    }, []);
+
+    async function fetchHeroImage() {
+        try {
+            const { data, error } = await supabase
+                .from('hero_images')
+                .select('image_url')
+                .eq('is_active', true)
+                .single();
+
+            if (data && data.image_url) {
+                setHeroImageUrl(data.image_url);
+            }
+        } catch (error) {
+            console.log('Using default hero image');
+        }
+    }
 
     return (
         <section className="relative w-full overflow-hidden bg-white">
@@ -47,7 +70,7 @@ export default function Hero() {
                     <div className="order-1 lg:order-2 relative h-[300px] lg:h-full min-h-[400px] w-full lg:min-h-[600px] rounded-2xl overflow-hidden shadow-2xl">
                         <div className="absolute inset-0 bg-[#001F3F]/10 z-10"></div> {/* Overlay */}
                         <Image
-                            src="/hero.png"
+                            src={heroImageUrl}
                             alt="Sygma Consult Corporate Meeting"
                             fill
                             className="object-cover transition-transform duration-700 hover:scale-105"
