@@ -1,0 +1,35 @@
+# Dependencies
+web/node_modules/
+node_modules/
+
+# Next.js build
+web/.next/
+web/out/
+.next/
+out/
+
+# Env files
+web/.env*.local
+web/.env
+.env*.local
+.env
+
+# Local sensitive files
+ADMIN_CREDENTIALS.md
+بيانات_الأدمن.txt
+*.txt
+*.pem
+*.key
+.DS_Store
+
+# Logs
+*.log
+web/npm-debug.log*
+
+# Other
+web/.vercel
+.vercel
+
+# Typescript
+*.tsbuildinfo
+next-env.d.ts
