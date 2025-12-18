@@ -93,7 +93,7 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold text-[#001F3F]">Dashboard</h1>
+        <h1 className="text-3xl font-bold text-[#001F3F]">Dashboard <span className="text-xs font-normal text-gray-400">v1.2.0-final</span></h1>
         <p className="text-gray-600 mt-1">Welcome back! Here's what's happening today.</p>
       </div>
 
@@ -149,13 +149,12 @@ export default function AdminDashboard() {
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900">{new Date(booking.date).toLocaleDateString()}</p>
                     <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        booking.status === 'confirmed'
+                      className={`text-xs px-2 py-1 rounded-full ${booking.status === 'confirmed'
                           ? 'bg-green-100 text-green-700'
                           : booking.status === 'pending'
-                          ? 'bg-yellow-100 text-yellow-700'
-                          : 'bg-red-100 text-red-700'
-                      }`}
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-red-100 text-red-700'
+                        }`}
                     >
                       {booking.status}
                     </span>
