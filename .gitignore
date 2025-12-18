@@ -33,3 +33,9 @@ web/.vercel
 # Typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code
+.claude/
+
+# System files
+NUL
