@@ -87,8 +87,8 @@ export default function DataTable<T extends Record<string, any>>({
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      <div className="overflow-x-auto -mx-4 sm:mx-0">
+        <table className="w-full min-w-full">
           <thead className="bg-gray-50 border-b border-gray-100">
             <tr>
               {columns.map((column, index) => (
@@ -97,14 +97,14 @@ export default function DataTable<T extends Record<string, any>>({
                   onClick={() =>
                     column.sortable && typeof column.accessor === 'string' && handleSort(column.accessor)
                   }
-                  className={`px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider ${
+                  className={`px-3 sm:px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap ${
                     column.sortable ? 'cursor-pointer hover:bg-gray-100' : ''
                   }`}
                 >
-                  <div className="flex items-center gap-2">
-                    {column.header}
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <span className="truncate">{column.header}</span>
                     {column.sortable && sortConfig?.key === column.accessor && (
-                      <span>{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
+                      <span className="flex-shrink-0">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>
                     )}
                   </div>
                 </th>
@@ -114,7 +114,7 @@ export default function DataTable<T extends Record<string, any>>({
           <tbody className="divide-y divide-gray-100">
             {paginatedData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-6 py-12 text-center text-gray-400">
+                <td colSpan={columns.length} className="px-3 sm:px-6 py-8 sm:py-12 text-center text-gray-400 text-sm">
                   No data found
                 </td>
               </tr>
@@ -122,7 +122,7 @@ export default function DataTable<T extends Record<string, any>>({
               paginatedData.map((row, rowIndex) => (
                 <tr key={rowIndex} className="hover:bg-gray-50 transition-colors">
                   {columns.map((column, colIndex) => (
-                    <td key={colIndex} className="px-6 py-4 text-sm text-gray-700">
+                    <td key={colIndex} className="px-3 sm:px-4 md:px-6 py-3 md:py-4 text-xs sm:text-sm text-gray-700">
                       {typeof column.accessor === 'function'
                         ? column.accessor(row)
                         : row[column.accessor]}
@@ -137,8 +137,8 @@ export default function DataTable<T extends Record<string, any>>({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-          <p className="text-sm text-gray-500">
+        <div className="px-3 sm:px-4 md:px-6 py-3 md:py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
+          <p className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
             Showing {startIndex + 1} to {Math.min(startIndex + pageSize, sortedData.length)} of{' '}
             {sortedData.length} results
           </p>
@@ -146,19 +146,19 @@ export default function DataTable<T extends Record<string, any>>({
             <button
               onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
               disabled={currentPage === 1}
-              className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-1.5 sm:p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </button>
-            <span className="text-sm text-gray-600">
+            <span className="text-xs sm:text-sm text-gray-600 px-2">
               Page {currentPage} of {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
               disabled={currentPage === totalPages}
-              className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-1.5 sm:p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </button>
           </div>
         </div>

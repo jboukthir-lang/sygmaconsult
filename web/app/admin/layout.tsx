@@ -203,10 +203,10 @@ export default function AdminLayout({
 
       <div className="flex-1 flex flex-col">
         {/* Top Header */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Search Bar */}
-            <div className="relative w-96">
+        <header className="bg-white border-b border-gray-200 px-3 sm:px-4 md:px-6 py-3 md:py-4">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
+            {/* Search Bar - Hidden on mobile */}
+            <div className="relative hidden md:block md:w-64 lg:w-96">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 type="text"
@@ -215,8 +215,13 @@ export default function AdminLayout({
               />
             </div>
 
+            {/* Mobile: Just show Sygma title */}
+            <div className="md:hidden flex-1">
+              <h2 className="text-lg font-bold text-[#001F3F]">SYGMA <span className="text-[#D4AF37]">ADMIN</span></h2>
+            </div>
+
             {/* Right Side */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
               {/* Notifications */}
               <div className="relative">
                 <button
@@ -306,22 +311,23 @@ export default function AdminLayout({
               </div>
 
               {/* Admin Profile */}
-              <div className="flex items-center gap-3">
-                <div className="text-right">
+              <div className="flex items-center gap-2 sm:gap-3">
+                {/* Hide text on mobile, show only avatar */}
+                <div className="hidden md:block text-right">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-semibold text-gray-700">{user.displayName || 'Admin User'}</p>
+                    <p className="text-sm font-semibold text-gray-700 truncate max-w-[120px] lg:max-w-none">{user.displayName || 'Admin User'}</p>
                     {adminRole && (
-                      <span className="px-2 py-0.5 bg-[#D4AF37] text-white text-xs font-semibold rounded-full uppercase">
+                      <span className="hidden lg:inline px-2 py-0.5 bg-[#D4AF37] text-white text-xs font-semibold rounded-full uppercase whitespace-nowrap">
                         {adminRole === 'super_admin' ? 'Super Admin' : adminRole}
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500">{user.email}</p>
+                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
                 </div>
                 {user.photoURL ? (
-                  <img src={user.photoURL} alt="Profile" className="w-10 h-10 rounded-full" />
+                  <img src={user.photoURL} alt="Profile" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full" />
                 ) : (
-                  <div className="w-10 h-10 bg-[#001F3F] text-white rounded-full flex items-center justify-center font-bold">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#001F3F] text-white rounded-full flex items-center justify-center font-bold text-sm">
                     {user.displayName?.[0] || user.email?.[0] || 'A'}
                   </div>
                 )}
@@ -331,7 +337,7 @@ export default function AdminLayout({
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-3 sm:p-4 md:p-6">{children}</main>
       </div>
     </div>
   );

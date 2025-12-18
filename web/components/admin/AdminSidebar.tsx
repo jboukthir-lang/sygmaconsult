@@ -4,13 +4,15 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { LayoutDashboard, Calendar, MessageSquare, Users, BarChart3, FileText, Briefcase, LogOut, Bell, Globe, Settings, Clock } from 'lucide-react';
+import { LayoutDashboard, Calendar, MessageSquare, Users, BarChart3, FileText, Briefcase, LogOut, Bell, Globe, Settings, Clock, Menu, X } from 'lucide-react';
 import { t } from '@/lib/translations';
+import { useState } from 'react';
 
 export default function AdminSidebar() {
   const pathname = usePathname();
   const { signOut } = useAuth();
   const { language, setLanguage } = useLanguage();
+  const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
     {
@@ -92,67 +94,94 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="w-64 bg-[#001F3F] text-white min-h-screen flex flex-col">
-      {/* Logo */}
-      <div className="p-6 border-b border-white/10">
-        <Link href="/admin" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#D4AF37] rounded-lg flex items-center justify-center font-bold text-[#001F3F]">
-            S
-          </div>
-          <div>
-            <h1 className="text-lg font-bold">Sygma Admin</h1>
-            <p className="text-xs text-blue-200">Management Portal</p>
-          </div>
-        </Link>
-      </div>
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-[#001F3F] text-white rounded-lg shadow-lg"
+      >
+        {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+      </button>
 
-      {/* Navigation */}
-      <nav className="flex-1 p-4">
-        <ul className="space-y-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/50 z-30"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
 
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                    isActive
-                      ? 'bg-[#D4AF37] text-[#001F3F] font-semibold'
-                      : 'text-blue-100 hover:bg-white/10'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  <span>{item.title}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+      {/* Sidebar */}
+      <aside className={`
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        md:translate-x-0
+        fixed md:static
+        w-64 bg-[#001F3F] text-white min-h-screen flex flex-col
+        transition-transform duration-300 ease-in-out
+        z-40
+      `}>
+        {/* Logo */}
+        <div className="p-4 sm:p-6 border-b border-white/10">
+          <Link href="/admin" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
+            <div className="w-8 h-8 bg-[#D4AF37] rounded-lg flex items-center justify-center font-bold text-[#001F3F]">
+              S
+            </div>
+            <div>
+              <h1 className="text-base sm:text-lg font-bold">Sygma Admin</h1>
+              <p className="text-xs text-blue-200">Management Portal</p>
+            </div>
+          </Link>
+        </div>
 
-      {/* Footer */}
-      <div className="p-4 border-t border-white/10 space-y-2">
-        {/* Language Toggle */}
-        <button
-          onClick={toggleLanguage}
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-100 hover:bg-white/10 transition-colors w-full"
-          title={t('profile.language', language)}
-        >
-          <Globe className="h-5 w-5" />
-          <span className="font-semibold">{getLanguageLabel()}</span>
-        </button>
+        {/* Navigation */}
+        <nav className="flex-1 p-4">
+          <ul className="space-y-2">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
 
-        {/* Logout */}
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-100 hover:bg-white/10 transition-colors w-full"
-        >
-          <LogOut className="h-5 w-5" />
-          <span>{t('auth.logout', language)}</span>
-        </button>
-      </div>
-    </aside>
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                      isActive
+                        ? 'bg-[#D4AF37] text-[#001F3F] font-semibold'
+                        : 'text-blue-100 hover:bg-white/10'
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span className="text-sm">{item.title}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-white/10 space-y-2">
+          {/* Language Toggle */}
+          <button
+            onClick={toggleLanguage}
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-100 hover:bg-white/10 transition-colors w-full"
+            title={t('profile.language', language)}
+          >
+            <Globe className="h-5 w-5" />
+            <span className="font-semibold text-sm">{getLanguageLabel()}</span>
+          </button>
+
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-blue-100 hover:bg-white/10 transition-colors w-full"
+          >
+            <LogOut className="h-5 w-5" />
+            <span className="text-sm">{t('auth.logout', language)}</span>
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }

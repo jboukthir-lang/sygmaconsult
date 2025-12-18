@@ -199,10 +199,10 @@ export default function BookingCalendar() {
     }
 
     return (
-        <div className="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 flex flex-col md:flex-row">
+        <div className="w-full max-w-4xl mx-auto bg-white rounded-xl md:rounded-2xl shadow-xl overflow-hidden border border-gray-100 flex flex-col md:flex-row">
 
             {/* Sidebar Info */}
-            <div className="bg-[#001F3F] p-8 text-white md:w-1/3 flex flex-col justify-between">
+            <div className="bg-[#001F3F] p-4 sm:p-6 md:p-8 text-white md:w-1/3 flex flex-col justify-between">
                 <div>
                     <h3 className="text-xl font-serif font-bold mb-2">{t.booking.sidebar.title}</h3>
                     <p className="text-blue-200 text-sm mb-6">{t.booking.sidebar.subtitle}</p>
@@ -230,7 +230,7 @@ export default function BookingCalendar() {
             </div>
 
             {/* Main Content */}
-            <div className="p-8 md:w-2/3">
+            <div className="p-4 sm:p-6 md:p-8 md:w-2/3">
 
                 {step === 1 && (
                     <div className="animate-in fade-in slide-in-from-right-4 duration-300">
@@ -284,12 +284,12 @@ export default function BookingCalendar() {
 
                         {/* Time Slots */}
                         {selectedDate && (
-                            <div className="grid grid-cols-3 gap-3">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
                                 {timeSlots.map(time => (
                                     <button
                                         key={time}
                                         onClick={() => setSelectedTime(time)}
-                                        className={`py-2 px-4 rounded-full text-sm border transition-all ${selectedTime === time
+                                        className={`py-2 px-3 sm:px-4 rounded-full text-sm border transition-all ${selectedTime === time
                                             ? 'border-[#D4AF37] bg-[#D4AF37] text-white'
                                             : 'border-gray-200 hover:border-[#001F3F] hover:text-[#001F3F]'
                                             }`}
