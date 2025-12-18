@@ -55,13 +55,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!existingProfile) {
         // Create new profile
-        await supabase.from('user_profiles').insert({
+        console.log('🆕 Creating new user profile for:', firebaseUser.email);
+        const { error: insertError } = await supabase.from('user_profiles').insert({
           user_id: firebaseUser.uid,
           email: firebaseUser.email || '',
           full_name: firebaseUser.displayName || '',
-          avatar_url: firebaseUser.photoURL || '',
-          language: 'fr',
+          photo_url: firebaseUser.photoURL || '',
+          phone: firebaseUser.phoneNumber || '',
+          created_at: new Date().toISOString(),
         });
+
+        if (insertError) {
+          console.error('❌ Error creating user profile:', insertError);
+          throw insertError;
+        }
+
+        console.log('✅ User profile created successfully');
 
         // Send welcome notification
         await supabase.from('notifications').insert({
