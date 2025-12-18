@@ -38,8 +38,8 @@ export default function HeroImageManagement() {
       }
 
       setHeroImage(data);
-    } catch (error) {
-      console.error('Erreur lors du chargement de l\'image:', error);
+    } catch (error: any) {
+      console.error('Erreur lors du chargement de l\'image:', error?.message || 'Unknown error');
     } finally {
       setLoading(false);
     }
