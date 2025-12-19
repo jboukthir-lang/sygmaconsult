@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { LogIn, Loader2, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LoginPage() {
   const { user, loading, signInWithGoogle, signInWithEmail } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || '/profile';
@@ -34,15 +36,15 @@ export default function LoginPage() {
     } catch (error: any) {
       console.error('Login failed:', error);
       if (error.code === 'auth/invalid-credential') {
-        setError('Invalid email or password');
+        setError(t.login.errorInvalidCredential);
       } else if (error.code === 'auth/user-not-found') {
-        setError('No account found with this email');
+        setError(t.login.errorUserNotFound);
       } else if (error.code === 'auth/wrong-password') {
-        setError('Incorrect password');
+        setError(t.login.errorWrongPassword);
       } else if (error.code === 'auth/too-many-requests') {
-        setError('Too many failed attempts. Please try again later.');
+        setError(t.login.errorTooManyRequests);
       } else {
-        setError(error.message || 'Failed to sign in. Please try again.');
+        setError(error.message || t.login.errorDefault);
       }
     } finally {
       setIsLoading(false);
@@ -56,7 +58,7 @@ export default function LoginPage() {
       await signInWithGoogle();
     } catch (error) {
       console.error('Google sign-in failed:', error);
-      setError('Failed to sign in with Google');
+      setError(t.login.errorGoogleSignIn);
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +69,7 @@ export default function LoginPage() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <Loader2 className="h-12 w-12 text-[#001F3F] animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading...</p>
+          <p className="text-gray-600">{t.login.loading}</p>
         </div>
       </div>
     );
@@ -78,7 +80,7 @@ export default function LoginPage() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <Loader2 className="h-12 w-12 text-[#001F3F] animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Redirecting...</p>
+          <p className="text-gray-600">{t.login.redirecting}</p>
         </div>
       </div>
     );
@@ -101,10 +103,10 @@ export default function LoginPage() {
 
           <div className="space-y-6 text-white">
             <h2 className="text-4xl font-bold leading-tight">
-              Your Strategic Partner for Business Success
+              {t.login.tagline}
             </h2>
             <p className="text-lg text-blue-200">
-              Access premium consulting services, manage your bookings, and track your documents all in one place.
+              {t.login.description}
             </p>
           </div>
         </div>
@@ -112,15 +114,15 @@ export default function LoginPage() {
         <div className="space-y-4 text-blue-200">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">✓</div>
-            <span>Expert legal and fiscal consulting</span>
+            <span>{t.login.feature1}</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">✓</div>
-            <span>Digital transformation solutions</span>
+            <span>{t.login.feature2}</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">✓</div>
-            <span>Trusted by businesses across borders</span>
+            <span>{t.login.feature3}</span>
           </div>
         </div>
       </div>
@@ -141,8 +143,8 @@ export default function LoginPage() {
             </div>
 
             <div className="mb-8">
-              <h2 className="text-3xl font-bold text-[#001F3F] mb-2">Welcome Back</h2>
-              <p className="text-gray-600">Sign in to access your account</p>
+              <h2 className="text-3xl font-bold text-[#001F3F] mb-2">{t.login.welcomeBack}</h2>
+              <p className="text-gray-600">{t.login.signInDesc}</p>
             </div>
 
             {/* Error Message */}
@@ -157,7 +159,7 @@ export default function LoginPage() {
               {/* Email Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
+                  {t.login.emailLabel}
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -167,7 +169,7 @@ export default function LoginPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#001F3F]/20 focus:border-[#001F3F]"
-                    placeholder="Enter your email"
+                    placeholder={t.login.emailPlaceholder}
                   />
                 </div>
               </div>
@@ -175,7 +177,7 @@ export default function LoginPage() {
               {/* Password Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Password
+                  {t.login.passwordLabel}
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -185,7 +187,7 @@ export default function LoginPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     className="w-full pl-11 pr-12 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#001F3F]/20 focus:border-[#001F3F]"
-                    placeholder="Enter your password"
+                    placeholder={t.login.passwordPlaceholder}
                   />
                   <button
                     type="button"
@@ -203,7 +205,7 @@ export default function LoginPage() {
                   href="/reset-password"
                   className="text-sm text-[#001F3F] hover:underline"
                 >
-                  Forgot password?
+                  {t.login.forgotPassword}
                 </Link>
               </div>
 
@@ -218,7 +220,7 @@ export default function LoginPage() {
                 ) : (
                   <>
                     <LogIn className="h-5 w-5" />
-                    Sign In
+                    {t.login.signInButton}
                   </>
                 )}
               </button>
@@ -230,7 +232,7 @@ export default function LoginPage() {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">Or continue with</span>
+                <span className="px-4 bg-white text-gray-500">{t.login.orContinue}</span>
               </div>
             </div>
 
@@ -258,28 +260,28 @@ export default function LoginPage() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              Continue with Google
+              {t.login.continueGoogle}
             </button>
 
             {/* Sign Up Link */}
             <div className="mt-6 text-center text-sm text-gray-600">
               <p>
-                Don't have an account?{' '}
+                {t.login.noAccount}{' '}
                 <Link href="/signup" className="text-[#001F3F] hover:underline font-semibold">
-                  Sign up
+                  {t.login.signUpLink}
                 </Link>
               </p>
             </div>
 
             <div className="mt-6 text-center text-sm text-gray-500">
               <p>
-                By signing in, you agree to our{' '}
+                {t.login.bySigningIn}{' '}
                 <Link href="/terms" className="text-[#001F3F] hover:underline">
-                  Terms of Service
+                  {t.login.termsService}
                 </Link>{' '}
-                and{' '}
+                {t.login.and}{' '}
                 <Link href="/privacy" className="text-[#001F3F] hover:underline">
-                  Privacy Policy
+                  {t.login.privacyPolicy}
                 </Link>
               </p>
             </div>
@@ -288,9 +290,9 @@ export default function LoginPage() {
           {/* Additional Info */}
           <div className="mt-8 text-center text-sm text-gray-600">
             <p>
-              Need help?{' '}
+              {t.login.needHelp}{' '}
               <Link href="/contact" className="text-[#001F3F] hover:underline font-semibold">
-                Contact Support
+                {t.login.contactSupport}
               </Link>
             </p>
           </div>

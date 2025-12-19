@@ -168,6 +168,58 @@ type Translations = {
         description: string;
         features: string[];
     }>;
+    login: {
+        welcomeBack: string;
+        signInDesc: string;
+        emailLabel: string;
+        passwordLabel: string;
+        emailPlaceholder: string;
+        passwordPlaceholder: string;
+        forgotPassword: string;
+        signInButton: string;
+        orContinue: string;
+        continueGoogle: string;
+        noAccount: string;
+        signUpLink: string;
+        bySigningIn: string;
+        termsService: string;
+        and: string;
+        privacyPolicy: string;
+        needHelp: string;
+        contactSupport: string;
+        loading: string;
+        redirecting: string;
+        errorInvalidCredential: string;
+        errorUserNotFound: string;
+        errorWrongPassword: string;
+        errorTooManyRequests: string;
+        errorDefault: string;
+        errorGoogleSignIn: string;
+        tagline: string;
+        description: string;
+        feature1: string;
+        feature2: string;
+        feature3: string;
+    };
+    aboutPage: {
+        hero_title: string;
+        hero_subtitle: string;
+        stats_years: string;
+        stats_clients: string;
+        stats_offices: string;
+        stats_value: string;
+        story_title: string;
+        story_p1: string;
+        story_p2: string;
+        vision_title: string;
+        vision_desc: string;
+        client_title: string;
+        client_desc: string;
+        excellence_title: string;
+        excellence_desc: string;
+        offices_title: string;
+        offices_subtitle: string;
+    };
 };
 
 const translations: Record<Language, Translations> = {
@@ -390,6 +442,58 @@ const translations: Record<Language, Translations> = {
                 description: "Comprehensive legal accompaniment for real estate transactions (buying/selling) and construction projects. We ensure your assets are protected and your projects proceed smoothly.",
                 features: ["Property Acquisition Support", "Construction Contracts", "Lease Agreements", "Real Estate Litigation"]
             }
+        },
+        login: {
+            welcomeBack: "Welcome Back",
+            signInDesc: "Sign in to access your account",
+            emailLabel: "Email Address",
+            passwordLabel: "Password",
+            emailPlaceholder: "Enter your email",
+            passwordPlaceholder: "Enter your password",
+            forgotPassword: "Forgot password?",
+            signInButton: "Sign In",
+            orContinue: "Or continue with",
+            continueGoogle: "Continue with Google",
+            noAccount: "Don't have an account?",
+            signUpLink: "Sign up",
+            bySigningIn: "By signing in, you agree to our",
+            termsService: "Terms of Service",
+            and: "and",
+            privacyPolicy: "Privacy Policy",
+            needHelp: "Need help?",
+            contactSupport: "Contact Support",
+            loading: "Loading...",
+            redirecting: "Redirecting...",
+            errorInvalidCredential: "Invalid email or password",
+            errorUserNotFound: "No account found with this email",
+            errorWrongPassword: "Incorrect password",
+            errorTooManyRequests: "Too many failed attempts. Please try again later.",
+            errorDefault: "Failed to sign in. Please try again.",
+            errorGoogleSignIn: "Failed to sign in with Google",
+            tagline: "Your Strategic Partner for Business Success",
+            description: "Access premium consulting services, manage your bookings, and track your documents all in one place.",
+            feature1: "Expert legal and fiscal consulting",
+            feature2: "Digital transformation solutions",
+            feature3: "Trusted by businesses across borders"
+        },
+        aboutPage: {
+            hero_title: "About Sygma Consult",
+            hero_subtitle: "Bridging the gap between European standards and African opportunities since 2015.",
+            stats_years: "Years Experience",
+            stats_clients: "Clients Served",
+            stats_offices: "Main Offices",
+            stats_value: "Value Created",
+            story_title: "Our Story",
+            story_p1: "Sygma Consult was born from a vision to create a seamless business corridor between France and Tunisia. Recognizing the complexities that entrepreneurs face when operating across these two vibrant economies, we established a firm grounded in deep local expertise and international standards.",
+            story_p2: "Today, we are proud to be the trusted partner for multinational corporations, SMEs, and visionary startups. Our dual presence in Paris and Tunis allows us to offer real-time, on-the-ground support that other firms cannot match.",
+            vision_title: "Global Vision",
+            vision_desc: "Thinking beyond borders to unlock international potential.",
+            client_title: "Client Centric",
+            client_desc: "Your success is the only metric that matters to us.",
+            excellence_title: "Excellence",
+            excellence_desc: "Delivering premium quality in every consultation.",
+            offices_title: "Our Offices",
+            offices_subtitle: "With strategic locations in Paris and Tunis, we provide comprehensive support across Europe and North Africa."
         }
     },
     fr: {
@@ -566,7 +670,7 @@ const translations: Record<Language, Translations> = {
             "strategic": {
                 title: "Développement de Marché",
                 subtitle: "Pénétrez de Nouveaux Marchés avec Confiance",
-                description: "Notre service 'Développement et Pénétration de Marché' fournit des stratégies de croissance ambitieuses pour les entreprises souhaitant s’implanter en France ou en Afrique du Nord. Nous analysons la dynamique du marché, identifions les opportunités clés et créons une feuille de route pour un succès durable.",
+                description: "Notre service 'Développement et Pénétration de Marché' fournit des stratégies de croissance ambitieuses pour les entreprises souhaitant s'implanter en France ou en Afrique du Nord. Nous analysons la dynamique du marché, identifions les opportunités clés et créons une feuille de route pour un succès durable.",
                 features: ["Stratégie d'Entrée sur le Marché", "Analyse Concurrentielle", "Modélisation de la Croissance", "Développement de Partenariats"]
             },
             "financial-legal": {
@@ -611,6 +715,58 @@ const translations: Record<Language, Translations> = {
                 description: "Accompagnement juridique complet pour les transactions immobilières (achat/vente) et les projets de construction. Nous veillons à ce que vos actifs soient protégés et que vos projets se déroulent sans encombre.",
                 features: ["Support Acquisition Immobilière", "Contrats de Construction", "Baux Commerciaux", "Contentieux Immobilier"]
             }
+        },
+        login: {
+            welcomeBack: "Bon Retour",
+            signInDesc: "Connectez-vous pour accéder à votre compte",
+            emailLabel: "Adresse e-mail",
+            passwordLabel: "Mot de passe",
+            emailPlaceholder: "Entrez votre adresse e-mail",
+            passwordPlaceholder: "Entrez votre mot de passe",
+            forgotPassword: "Mot de passe oublié ?",
+            signInButton: "Se connecter",
+            orContinue: "Ou continuer avec",
+            continueGoogle: "Continuer avec Google",
+            noAccount: "Vous n'avez pas de compte ?",
+            signUpLink: "S'inscrire",
+            bySigningIn: "En vous connectant, vous acceptez nos",
+            termsService: "Conditions d'utilisation",
+            and: "et",
+            privacyPolicy: "Politique de confidentialité",
+            needHelp: "Besoin d'aide ?",
+            contactSupport: "Contacter le support",
+            loading: "Chargement...",
+            redirecting: "Redirection...",
+            errorInvalidCredential: "E-mail ou mot de passe invalide",
+            errorUserNotFound: "Aucun compte trouvé avec cet e-mail",
+            errorWrongPassword: "Mot de passe incorrect",
+            errorTooManyRequests: "Trop de tentatives échouées. Veuillez réessayer plus tard.",
+            errorDefault: "Échec de la connexion. Veuillez réessayer.",
+            errorGoogleSignIn: "Échec de la connexion avec Google",
+            tagline: "Votre Partenaire Stratégique pour la Réussite",
+            description: "Accédez à des services de conseil premium, gérez vos réservations et suivez vos documents en un seul endroit.",
+            feature1: "Conseil juridique et fiscal expert",
+            feature2: "Solutions de transformation numérique",
+            feature3: "De confiance pour les entreprises au-delà des frontières"
+        },
+        aboutPage: {
+            hero_title: "À Propos de Sygma Consult",
+            hero_subtitle: "Combler le fossé entre les normes européennes et les opportunités africaines depuis 2015.",
+            stats_years: "Années d'Expérience",
+            stats_clients: "Clients Servis",
+            stats_offices: "Bureaux Principaux",
+            stats_value: "Valeur Créée",
+            story_title: "Notre Histoire",
+            story_p1: "Sygma Consult est né d'une vision visant à créer un corridor commercial transparent entre la France et la Tunisie. Conscients des complexités auxquelles sont confrontés les entrepreneurs opérant dans ces deux économies dynamiques, nous avons créé un cabinet fondé sur une expertise locale approfondie et des normes internationales.",
+            story_p2: "Aujourd'hui, nous sommes fiers d'être le partenaire de confiance des multinationales, des PME et des startups visionnaires. Notre double présence à Paris et à Tunis nous permet d'offrir un soutien en temps réel et sur le terrain que d'autres cabinets ne peuvent égaler.",
+            vision_title: "Vision Mondiale",
+            vision_desc: "Penser au-delà des frontières pour débloquer le potentiel international.",
+            client_title: "Centré sur le Client",
+            client_desc: "Votre succès est le seul indicateur qui compte pour nous.",
+            excellence_title: "Excellence",
+            excellence_desc: "Offrir une qualité premium dans chaque consultation.",
+            offices_title: "Nos Bureaux",
+            offices_subtitle: "Avec des emplacements stratégiques à Paris et à Tunis, nous offrons un soutien complet à travers l'Europe et l'Afrique du Nord."
         }
     },
     ar: {
@@ -833,6 +989,58 @@ const translations: Record<Language, Translations> = {
                 description: "مرافقة قانونية شاملة للمعاملات العقارية (الشراء / البيع) ومشاريع البناء. نحن نضمن حماية أصولك وسير مشاريعك بسلاسة.",
                 features: ["دعم الاستحواذ العقاري", "عقود البناء", "اتفاقيات الإيجار", "التقاضي العقاري"]
             }
+        },
+        login: {
+            welcomeBack: "مرحباً بعودتك",
+            signInDesc: "سجل الدخول للوصول إلى حسابك",
+            emailLabel: "البريد الإلكتروني",
+            passwordLabel: "كلمة المرور",
+            emailPlaceholder: "أدخل بريدك الإلكتروني",
+            passwordPlaceholder: "أدخل كلمة المرور",
+            forgotPassword: "نسيت كلمة المرور؟",
+            signInButton: "تسجيل الدخول",
+            orContinue: "أو تابع باستخدام",
+            continueGoogle: "متابعة باستخدام جوجل",
+            noAccount: "ليس لديك حساب؟",
+            signUpLink: "إنشاء حساب",
+            bySigningIn: "بتسجيل الدخول، فإنك توافق على",
+            termsService: "شروط الخدمة",
+            and: "و",
+            privacyPolicy: "سياسة الخصوصية",
+            needHelp: "تحتاج مساعدة؟",
+            contactSupport: "اتصل بالدعم",
+            loading: "جاري التحميل...",
+            redirecting: "جاري التحويل...",
+            errorInvalidCredential: "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+            errorUserNotFound: "لم يتم العثور على حساب بهذا البريد الإلكتروني",
+            errorWrongPassword: "كلمة المرور غير صحيحة",
+            errorTooManyRequests: "عدد كبير جداً من المحاولات الفاشلة. يرجى المحاولة لاحقاً.",
+            errorDefault: "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.",
+            errorGoogleSignIn: "فشل تسجيل الدخول باستخدام جوجل",
+            tagline: "شريكك الاستراتيجي لتحقيق النجاح",
+            description: "الوصول إلى خدمات استشارية متميزة، إدارة حجوزاتك، وتتبع مستنداتك في مكان واحد.",
+            feature1: "استشارات قانونية ومالية متخصصة",
+            feature2: "حلول التحول الرقمي",
+            feature3: "موثوق به من قبل الشركات عبر الحدود"
+        },
+        aboutPage: {
+            hero_title: "عن سيجما كونسلت",
+            hero_subtitle: "سد الفجوة بين المعايير الأوروبية والفرص الأفريقية منذ عام 2015.",
+            stats_years: "سنوات الخبرة",
+            stats_clients: "العملاء المخدومون",
+            stats_offices: "المكاتب الرئيسية",
+            stats_value: "القيمة المُنشأة",
+            story_title: "قصتنا",
+            story_p1: "ولدت سيجما كونسلت من رؤية لإنشاء ممر تجاري سلس بين فرنسا وتونس. إدراكاً للتعقيدات التي يواجهها رواد الأعمال عند العمل في هاتين الاقتصادين النابضين بالحياة، أنشأنا شركة مبنية على خبرة محلية عميقة ومعايير دولية.",
+            story_p2: "اليوم، نفخر بكوننا الشريك الموثوق به للشركات متعددة الجنسيات والشركات الصغيرة والمتوسطة والشركات الناشئة ذات الرؤية الثاقبة. وجودنا المزدوج في باريس وتونس يسمح لنا بتقديم دعم فوري وميداني لا يمكن لشركات أخرى مضاهاته.",
+            vision_title: "رؤية عالمية",
+            vision_desc: "التفكير خارج الحدود لفتح الإمكانات الدولية.",
+            client_title: "التركيز على العميل",
+            client_desc: "نجاحك هو المقياس الوحيد الذي يهمنا.",
+            excellence_title: "التميز",
+            excellence_desc: "تقديم جودة متميزة في كل استشارة.",
+            offices_title: "مكاتبنا",
+            offices_subtitle: "مع مواقع استراتيجية في باريس وتونس، نقدم دعماً شاملاً عبر أوروبا وشمال إفريقيا."
         }
     }
 };
