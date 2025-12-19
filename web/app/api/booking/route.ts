@@ -17,7 +17,9 @@ export async function POST(req: Request) {
             appointment_type = 'consultation',
             specialization,
             is_online = true,
-            notes
+            notes,
+            price = 0,
+            payment_status = 'pending'
         } = body;
 
         // Validation
@@ -52,7 +54,9 @@ export async function POST(req: Request) {
             appointment_type,
             specialization: specialization || topic,
             is_online,
-            notes: notes || ''
+            notes: notes || '',
+            price: price || 0,
+            payment_status: payment_status || (price > 0 ? 'pending' : 'free')
         };
 
         const { data, error } = await supabase

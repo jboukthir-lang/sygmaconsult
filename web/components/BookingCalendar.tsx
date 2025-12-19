@@ -118,6 +118,7 @@ export default function BookingCalendar() {
 
             // Get selected consultation type details
             const selectedConsultation = consultationTypes.find(c => c.id === formData.topic);
+            const consultationPrice = selectedConsultation?.price || 0;
 
             const response = await fetch('/api/booking', {
                 method: 'POST',
@@ -143,7 +144,9 @@ export default function BookingCalendar() {
                             ? selectedConsultation?.name_ar
                             : selectedConsultation?.name_en,
                     is_online: formData.is_online,
-                    notes: formData.notes
+                    notes: formData.notes,
+                    price: consultationPrice,
+                    payment_status: consultationPrice > 0 ? 'pending' : 'free'
                 }),
             });
 
@@ -154,7 +157,35 @@ export default function BookingCalendar() {
 
             const result = await response.json();
             console.log('Booking created:', result);
-            setStep(3); // Success state
+
+            // If consultation has a price, redirect to Stripe checkout
+            if (consultationPrice > 0 && result.booking?.id) {
+                const checkoutResponse = await fetch('/api/stripe/create-checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        bookingId: result.booking.id
+                    }),
+                });
+
+                if (!checkoutResponse.ok) {
+                    throw new Error('Failed to create checkout session');
+                }
+
+                const checkoutData = await checkoutResponse.json();
+
+                // Redirect to Stripe Checkout
+                if (checkoutData.url) {
+                    window.location.href = checkoutData.url;
+                } else {
+                    throw new Error('No checkout URL received');
+                }
+            } else {
+                // Free consultation - show success
+                setStep(3);
+            }
         } catch (error) {
             console.error('Error booking:', error);
             alert(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
@@ -394,6 +425,28 @@ export default function BookingCalendar() {
                             />
                         </div>
 
+                        {/* Price Display */}
+                        {consultationTypes.find(c => c.id === formData.topic)?.price && consultationTypes.find(c => c.id === formData.topic)!.price > 0 && (
+                            <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#001F3F]/10 p-4 rounded-xl border-2 border-[#D4AF37]/30">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-gray-600 mb-1">
+                                            {language === 'ar' ? 'السعر الإجمالي' : language === 'fr' ? 'Prix Total' : 'Total Price'}
+                                        </p>
+                                        <p className="text-3xl font-bold text-[#001F3F]">
+                                            {consultationTypes.find(c => c.id === formData.topic)?.price}€
+                                        </p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-xs text-gray-500">
+                                            {language === 'ar' ? 'دفع آمن عبر' : language === 'fr' ? 'Paiement sécurisé via' : 'Secure payment via'}
+                                        </p>
+                                        <p className="text-sm font-bold text-[#635BFF]">Stripe</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="flex justify-between pt-4">
                             <button
                                 type="button"
@@ -408,7 +461,12 @@ export default function BookingCalendar() {
                                 className="px-6 py-2 bg-[#D4AF37] text-white rounded-lg hover:bg-[#C5A028] shadow-md transition-all disabled:opacity-70 disabled:cursor-wait flex items-center gap-2"
                             >
                                 {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-                                {isLoading ? t.booking.step2.processing : t.booking.step2.confirm}
+                                {isLoading
+                                    ? t.booking.step2.processing
+                                    : consultationTypes.find(c => c.id === formData.topic)?.price && consultationTypes.find(c => c.id === formData.topic)!.price > 0
+                                        ? (language === 'ar' ? 'المتابعة للدفع' : language === 'fr' ? 'Continuer au paiement' : 'Continue to Payment')
+                                        : t.booking.step2.confirm
+                                }
                             </button>
                         </div>
                     </form>
