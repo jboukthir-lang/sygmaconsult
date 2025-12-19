@@ -84,7 +84,7 @@ export default function Header() {
                                     className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#001F3F] hover:text-[#D4AF37] transition-colors"
                                 >
                                     <LogOut className="h-4 w-4" />
-                                    Sign Out
+                                    {t.nav.signOut}
                                 </button>
                             </div>
                         ) : (
@@ -93,7 +93,7 @@ export default function Header() {
                                 className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#001F3F] text-sm font-medium text-[#001F3F] hover:bg-[#F8F9FA] transition-colors"
                             >
                                 <LogIn className="h-4 w-4" />
-                                Sign In
+                                {t.nav.signIn}
                             </Link>
                         )}
 
@@ -141,7 +141,7 @@ export default function Header() {
                                     className="flex items-center gap-2 p-2 text-red-600"
                                 >
                                     <LogOut className="h-4 w-4" />
-                                    Sign Out
+                                    {t.nav.signOut}
                                 </button>
                             </div>
                         ) : (
@@ -151,7 +151,7 @@ export default function Header() {
                                 className="flex items-center gap-2 p-3 bg-[#001F3F] text-white rounded-lg justify-center font-bold"
                             >
                                 <LogIn className="h-4 w-4" />
-                                Sign In
+                                {t.nav.signIn}
                             </Link>
                         )}
                     </div>

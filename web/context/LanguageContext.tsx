@@ -12,6 +12,8 @@ type Translations = {
         insights: string;
         contact: string;
         book: string;
+        signIn: string;
+        signOut: string;
     };
     hero: {
         badge: string;
@@ -176,7 +178,9 @@ const translations: Record<Language, Translations> = {
             about: 'About Us',
             insights: 'Insights',
             contact: 'Contact',
-            book: 'Book Consultation'
+            book: 'Book Consultation',
+            signIn: 'Sign In',
+            signOut: 'Sign Out'
         },
         hero: {
             badge: 'Premium Consulting Services',
@@ -395,7 +399,9 @@ const translations: Record<Language, Translations> = {
             about: 'À Propos',
             insights: 'Actualités',
             contact: 'Contact',
-            book: 'Prendre Rendez-vous'
+            book: 'Prendre Rendez-vous',
+            signIn: 'Se connecter',
+            signOut: 'Se déconnecter'
         },
         hero: {
             badge: 'Services de Conseil Premium',
@@ -614,7 +620,9 @@ const translations: Record<Language, Translations> = {
             about: 'من نحن',
             insights: 'أخبار ورؤى',
             contact: 'اتصل بنا',
-            book: 'احجز استشارة'
+            book: 'احجز استشارة',
+            signIn: 'تسجيل الدخول',
+            signOut: 'تسجيل الخروج'
         },
         hero: {
             badge: 'خدمات استشارية متميزة',

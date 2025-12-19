@@ -33,14 +33,37 @@ export const translations = {
     delete: {
       fr: 'Supprimer',
       ar: 'حذف',
+      en: 'Delete',
     },
     edit: {
       fr: 'Modifier',
       ar: 'تعديل',
+      en: 'Edit',
     },
     view: {
       fr: 'Voir',
       ar: 'عرض',
+      en: 'View',
+    },
+    upload: {
+      fr: 'Télécharger',
+      ar: 'تحميل',
+      en: 'Upload',
+    },
+    download: {
+      fr: 'Télécharger le fichier',
+      ar: 'تنزيل الملف',
+      en: 'Download',
+    },
+    signIn: {
+      fr: 'Se connecter',
+      ar: 'تسجيل الدخول',
+      en: 'Sign In',
+    },
+    signOut: {
+      fr: 'Se déconnecter',
+      ar: 'تسجيل الخروج',
+      en: 'Sign Out',
     },
     search: {
       fr: 'Rechercher',
@@ -1579,6 +1602,150 @@ export const translations = {
       fr: 'Prix',
       ar: 'السعر',
       en: 'Price',
+    },
+  },
+
+  // Additional UI elements
+  ui: {
+    loading: {
+      fr: 'Chargement...',
+      ar: 'جاري التحميل...',
+      en: 'Loading...',
+    },
+    loadingDashboard: {
+      fr: 'Chargement du tableau de bord...',
+      ar: 'جاري تحميل لوحة التحكم...',
+      en: 'Loading dashboard...',
+    },
+    loadingDocuments: {
+      fr: 'Chargement des documents...',
+      ar: 'جاري تحميل المستندات...',
+      en: 'Loading documents...',
+    },
+    loadingNotifications: {
+      fr: 'Chargement des notifications...',
+      ar: 'جاري تحميل الإشعارات...',
+      en: 'Loading notifications...',
+    },
+    uploadDocument: {
+      fr: 'Télécharger un document',
+      ar: 'تحميل مستند',
+      en: 'Upload Document',
+    },
+    deleteConfirm: {
+      fr: 'Êtes-vous sûr de vouloir supprimer ?',
+      ar: 'هل أنت متأكد من الحذف؟',
+      en: 'Are you sure you want to delete?',
+    },
+    deleteNotificationConfirm: {
+      fr: 'Êtes-vous sûr de vouloir supprimer cette notification ?',
+      ar: 'هل أنت متأكد من حذف هذا الإشعار؟',
+      en: 'Are you sure you want to delete this notification?',
+    },
+    deleteAllReadConfirm: {
+      fr: 'Êtes-vous sûr de vouloir supprimer toutes les notifications lues ?',
+      ar: 'هل أنت متأكد من حذف جميع الإشعارات المقروءة؟',
+      en: 'Are you sure you want to delete all read notifications?',
+    },
+    markAsRead: {
+      fr: 'Marquer comme lu',
+      ar: 'تحديد كمقروء',
+      en: 'Mark as read',
+    },
+    deleteAllRead: {
+      fr: 'Supprimer tout ce qui est lu',
+      ar: 'حذف جميع المقروء',
+      en: 'Delete all read',
+    },
+    unread: {
+      fr: 'Non lu',
+      ar: 'غير مقروء',
+      en: 'Unread',
+    },
+    read: {
+      fr: 'Lu',
+      ar: 'مقروء',
+      en: 'Read',
+    },
+    justNow: {
+      fr: 'À l\'instant',
+      ar: 'الآن',
+      en: 'Just now',
+    },
+    minutesAgo: {
+      fr: 'm il y a',
+      ar: 'د منذ',
+      en: 'm ago',
+    },
+    hoursAgo: {
+      fr: 'h il y a',
+      ar: 'س منذ',
+      en: 'h ago',
+    },
+    daysAgo: {
+      fr: 'j il y a',
+      ar: 'ي منذ',
+      en: 'd ago',
+    },
+    noUnreadNotifications: {
+      fr: 'Aucune notification non lue',
+      ar: 'لا توجد إشعارات غير مقروءة',
+      en: 'No unread notifications',
+    },
+    noReadNotifications: {
+      fr: 'Aucune notification lue',
+      ar: 'لا توجد إشعارات مقروءة',
+      en: 'No read notifications',
+    },
+    noNotificationsYet: {
+      fr: 'Aucune notification pour le moment',
+      ar: 'لا توجد إشعارات بعد',
+      en: 'No notifications yet',
+    },
+    allCaughtUp: {
+      fr: 'Tout est à jour !',
+      ar: 'كل شيء محدث!',
+      en: 'All caught up!',
+    },
+    viewDetails: {
+      fr: 'Voir les détails →',
+      ar: 'عرض التفاصيل ←',
+      en: 'View details →',
+    },
+    noDocumentsYet: {
+      fr: 'Aucun document téléchargé',
+      ar: 'لم يتم تحميل مستندات بعد',
+      en: 'No documents uploaded yet',
+    },
+    uploadFirstDocument: {
+      fr: 'Télécharger votre premier document',
+      ar: 'تحميل أول مستند',
+      en: 'Upload Your First Document',
+    },
+    supportedFormats: {
+      fr: 'Formats supportés : PDF, DOC, DOCX, JPG, PNG. Taille maximale : 10 Mo',
+      ar: 'الصيغ المدعومة: PDF, DOC, DOCX, JPG, PNG. الحد الأقصى: 10 ميجابايت',
+      en: 'Supported formats: PDF, DOC, DOCX, JPG, PNG. Maximum file size: 10MB',
+    },
+    size: {
+      fr: 'Taille',
+      ar: 'الحجم',
+      en: 'Size',
+    },
+    category: {
+      fr: 'Catégorie',
+      ar: 'الفئة',
+      en: 'Category',
+    },
+    uploaded: {
+      fr: 'Téléchargé',
+      ar: 'تم التحميل',
+      en: 'Uploaded',
+    },
+    failedUpload: {
+      fr: 'Échec du téléchargement. Veuillez réessayer.',
+      ar: 'فشل التحميل. يرجى المحاولة مرة أخرى.',
+      en: 'Failed to upload file. Please try again.',
     },
   },
 };
