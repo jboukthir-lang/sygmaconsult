@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import StatsCard from '@/components/admin/StatsCard';
-import { Calendar, MessageSquare, Users, TrendingUp, Clock, CheckCircle } from 'lucide-react';
+import { Calendar, MessageSquare, Users, TrendingUp, Clock, CheckCircle, FileText } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import Link from 'next/link';
 
 interface Stats {
   totalBookings: number;
@@ -11,6 +12,8 @@ interface Stats {
   totalMessages: number;
   newMessages: number;
   totalUsers: number;
+  totalPosts: number;
+  publishedPosts: number;
   recentActivity: any[];
 }
 
@@ -21,6 +24,8 @@ export default function AdminDashboard() {
     totalMessages: 0,
     newMessages: 0,
     totalUsers: 0,
+    totalPosts: 0,
+    publishedPosts: 0,
     recentActivity: [],
   });
   const [loading, setLoading] = useState(true);
@@ -56,6 +61,16 @@ export default function AdminDashboard() {
         .from('user_profiles')
         .select('*', { count: 'exact', head: true });
 
+      // Fetch posts count
+      const { count: postsCount } = await supabase
+        .from('posts')
+        .select('*', { count: 'exact', head: true });
+
+      const { count: publishedCount } = await supabase
+        .from('posts')
+        .select('*', { count: 'exact', head: true })
+        .eq('published', true);
+
       // Fetch recent bookings
       const { data: recentBookings } = await supabase
         .from('bookings')
@@ -69,6 +84,8 @@ export default function AdminDashboard() {
         totalMessages: contactsCount || 0,
         newMessages: newContactsCount || 0,
         totalUsers: usersCount || 0,
+        totalPosts: postsCount || 0,
+        publishedPosts: publishedCount || 0,
         recentActivity: recentBookings || [],
       });
     } catch (error) {
@@ -98,7 +115,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <StatsCard
           title="Total Bookings"
           value={stats.totalBookings}
@@ -117,6 +134,12 @@ export default function AdminDashboard() {
           value={stats.totalUsers}
           icon={Users}
           trend={{ value: 8, isPositive: true }}
+        />
+        <StatsCard
+          title="Blog Posts"
+          value={stats.totalPosts}
+          icon={FileText}
+          subtitle={`${stats.publishedPosts} published`}
         />
         <StatsCard
           title="Conversion Rate"
@@ -183,6 +206,13 @@ export default function AdminDashboard() {
               </div>
               <span className="text-sm text-gray-600">{stats.newMessages}</span>
             </button>
+            <Link href="/admin/posts" className="w-full flex items-center justify-between p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg transition-colors">
+              <div className="flex items-center gap-3">
+                <FileText className="h-5 w-5 text-yellow-700" />
+                <span className="font-medium text-yellow-700">Manage Blog Posts</span>
+              </div>
+              <span className="text-sm text-gray-600">{stats.totalPosts}</span>
+            </Link>
             <button className="w-full flex items-center justify-between p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
               <div className="flex items-center gap-3">
                 <Clock className="h-5 w-5 text-purple-700" />

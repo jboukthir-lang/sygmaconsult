@@ -73,6 +73,9 @@ type Translations = {
         title: string;
         subtitle: string;
         read_more: string;
+        all_posts: string;
+        no_posts: string;
+        min_read: string;
         articles: { category: string; title: string; summary: string; date: string }[];
     };
     booking: {
@@ -277,6 +280,9 @@ const translations: Record<Language, Translations> = {
             title: "Insights & News",
             subtitle: "Latest updates on law, business, and strategy.",
             read_more: "Read More",
+            all_posts: "All Posts",
+            no_posts: "No posts available yet",
+            min_read: "min read",
             articles: [
                 { category: "Legal", title: "New Visa Regulations 2025", summary: "Key updates for entrepreneurs and investors in France.", date: "Dec 10, 2025" },
                 { category: "Business", title: "Tunisia: The Next Tech Hub", summary: "Why North Africa is attracting global startups.", date: "Dec 05, 2025" },
@@ -550,6 +556,9 @@ const translations: Record<Language, Translations> = {
             title: "Actualités & Insights",
             subtitle: "Dernières mises à jour sur le droit, les affaires et la stratégie.",
             read_more: "Lire la suite",
+            all_posts: "Tous les Articles",
+            no_posts: "Aucun article disponible pour le moment",
+            min_read: "min de lecture",
             articles: [
                 { category: "Juridique", title: "Nouvelles Réglementations Visa 2025", summary: "Mises à jour clés pour les entrepreneurs et investisseurs en France.", date: "10 Déc 2025" },
                 { category: "Affaires", title: "Tunisie : Nouveau Hub Tech", summary: "Pourquoi l'Afrique du Nord attire les startups mondiales.", date: "05 Déc 2025" },
@@ -824,6 +833,9 @@ const translations: Record<Language, Translations> = {
             title: "أخبار ورؤى",
             subtitle: "آخر التحديثات حول القانون والأعمال والاستراتيجية.",
             read_more: "اقرأ المزيد",
+            all_posts: "جميع المقالات",
+            no_posts: "لا توجد مقالات متاحة حالياً",
+            min_read: "دقيقة قراءة",
             articles: [
                 { category: "قانوني", title: "لوائح التأشيرة الجديدة 2025", summary: "تحديثات رئيسية رواد الأعمال والمستثمرين الأجانب في فرنسا.", date: "10 ديسمبر 2025" },
                 { category: "أعمال", title: "تونس: مركز التكنولوجيا القادم", summary: "لماذا تجذب شمال أفريقيا الشركات الناشئة العالمية.", date: "05 ديسمبر 2025" },
