@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Mail, Loader2, ArrowLeft, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function ResetPasswordPage() {
   const { resetPassword } = useAuth();
@@ -44,15 +45,21 @@ export default function ResetPasswordPage() {
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#001F3F] to-[#003366] p-12 flex-col justify-between">
         <div>
-          <div className="flex items-center gap-3 text-white mb-12">
-            <div className="w-12 h-12 bg-[#D4AF37] rounded-lg flex items-center justify-center font-bold text-[#001F3F] text-2xl">
-              S
+          <Link href="/" className="flex items-center gap-3 text-white mb-12">
+            <div className="bg-white p-2 rounded-xl">
+              <Image
+                src="/logo.png"
+                alt="Sygma Consult"
+                width={120}
+                height={40}
+                className="h-10 w-auto"
+              />
             </div>
             <div>
               <h1 className="text-2xl font-bold">Sygma Consult</h1>
               <p className="text-sm text-blue-200">Paris • Tunis</p>
             </div>
-          </div>
+          </Link>
 
           <div className="space-y-6 text-white">
             <h2 className="text-4xl font-bold leading-tight">
@@ -85,15 +92,21 @@ export default function ResetPasswordPage() {
         <div className="w-full max-w-md">
           <div className="bg-white rounded-2xl shadow-xl p-8">
             {/* Logo for mobile */}
-            <div className="lg:hidden flex items-center gap-3 mb-8">
-              <div className="w-10 h-10 bg-[#001F3F] rounded-lg flex items-center justify-center font-bold text-white">
-                S
+            <Link href="/" className="lg:hidden flex items-center gap-3 mb-8">
+              <div className="bg-white p-2 rounded-lg border border-gray-100 shadow-sm">
+                <Image
+                  src="/logo.png"
+                  alt="Sygma Consult"
+                  width={100}
+                  height={32}
+                  className="h-8 w-auto"
+                />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-[#001F3F]">Sygma Consult</h1>
                 <p className="text-xs text-gray-500">Paris • Tunis</p>
               </div>
-            </div>
+            </Link>
 
             {/* Back Button */}
             <Link

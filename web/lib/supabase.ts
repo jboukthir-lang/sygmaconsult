@@ -18,10 +18,15 @@ export interface Booking {
   topic: string;
   date: string;
   time: string;
-  status?: 'pending' | 'confirmed' | 'cancelled';
+  status?: 'pending' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled';
   calendar_event_id?: string;
   meet_link?: string;
+  consultant_id?: string;
+  fee?: number;
+  internal_notes?: string;
+  duration?: number;
   created_at?: string;
+  updated_at?: string;
 }
 
 export interface Contact {

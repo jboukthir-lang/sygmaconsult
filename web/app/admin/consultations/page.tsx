@@ -2,33 +2,60 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Briefcase, Search, Plus, Eye, Edit, Trash2, DollarSign, Clock, User } from 'lucide-react';
+import {
+  Briefcase,
+  Search,
+  Plus,
+  Eye,
+  Edit,
+  Trash2,
+  DollarSign,
+  Clock,
+  User,
+  LayoutGrid,
+  List,
+  Video,
+  Calendar
+} from 'lucide-react';
 import StatsCard from '@/components/admin/StatsCard';
+import { motion } from 'framer-motion';
 
 interface Consultation {
   id: string;
   client_name: string;
   client_email: string;
   service_type: string;
-  status: 'scheduled' | 'in-progress' | 'completed' | 'cancelled';
-  consultant: string;
+  status: 'pending' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled';
+  consultant_id: string;
   date: string;
+  time: string;
   duration: number;
   fee: number;
   notes: string;
+  internal_notes: string;
+  meet_link: string;
   created_at: string;
+}
+
+interface AdminUser {
+  user_id: string;
+  email: string;
+  role: string;
 }
 
 export default function AdminConsultationsPage() {
   const [consultations, setConsultations] = useState<Consultation[]>([]);
+  const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'scheduled' | 'in-progress' | 'completed' | 'cancelled'>('all');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
   const [showModal, setShowModal] = useState(false);
   const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
 
   useEffect(() => {
     fetchConsultations();
+    fetchAdmins();
 
     // Real-time subscription
     const channel = supabase
@@ -51,9 +78,19 @@ export default function AdminConsultationsPage() {
     };
   }, []);
 
+  async function fetchAdmins() {
+    try {
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('user_id, email, role');
+      if (!error && data) setAdmins(data);
+    } catch (err) {
+      console.error('Error fetching admins:', err);
+    }
+  }
+
   async function fetchConsultations() {
     try {
-      // For now, we'll use bookings as consultations since we don't have a separate table
       const { data, error } = await supabase
         .from('bookings')
         .select('*')
@@ -61,18 +98,20 @@ export default function AdminConsultationsPage() {
 
       if (error) throw error;
 
-      // Transform bookings to consultations format
       const transformedData = (data || []).map(booking => ({
         id: booking.id,
         client_name: booking.name,
         client_email: booking.email,
         service_type: booking.topic,
-        status: booking.status as any,
-        consultant: 'Assigned Consultant',
+        status: booking.status,
+        consultant_id: booking.consultant_id || '',
         date: booking.date,
-        duration: 60, // Default 60 minutes
-        fee: 0, // Will be added later
+        time: booking.time,
+        duration: booking.duration || 60,
+        fee: booking.fee || 0,
         notes: booking.notes || '',
+        internal_notes: booking.internal_notes || '',
+        meet_link: booking.meet_link || '',
         created_at: booking.created_at,
       }));
 
@@ -81,6 +120,35 @@ export default function AdminConsultationsPage() {
       console.error('Error fetching consultations:', error);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function updateConsultation(id: string, updates: Partial<Consultation>) {
+    setIsSaving(true);
+    try {
+      // Map back to DB fields if necessary (status, notes, etc.)
+      const dbUpdates: any = { ...updates };
+      if (updates.client_name) dbUpdates.name = updates.client_name;
+      if (updates.client_email) dbUpdates.email = updates.client_email;
+      if (updates.service_type) dbUpdates.topic = updates.service_type;
+
+      const { error } = await supabase
+        .from('bookings')
+        .update(dbUpdates)
+        .eq('id', id);
+
+      if (error) throw error;
+
+      // Update local state for immediate feedback
+      setConsultations(prev => prev.map(c => c.id === id ? { ...c, ...updates } : c));
+      if (selectedConsultation?.id === id) {
+        setSelectedConsultation(prev => prev ? { ...prev, ...updates } : null);
+      }
+    } catch (err) {
+      console.error('Error updating consultation:', err);
+      alert('Failed to update consultation');
+    } finally {
+      setIsSaving(false);
     }
   }
 
@@ -97,16 +165,18 @@ export default function AdminConsultationsPage() {
 
   const stats = {
     total: consultations.length,
-    scheduled: consultations.filter(c => c.status === 'scheduled').length,
+    scheduled: consultations.filter(c => c.status === 'confirmed').length,
     inProgress: consultations.filter(c => c.status === 'in-progress').length,
     completed: consultations.filter(c => c.status === 'completed').length,
-    totalRevenue: consultations.filter(c => c.status === 'completed').reduce((sum, c) => sum + c.fee, 0),
+    totalRevenue: consultations.filter(c => c.status === 'completed').reduce((sum, c) => sum + (c.fee || 0), 0),
   };
 
   function getStatusColor(status: string) {
     switch (status) {
-      case 'scheduled':
+      case 'pending':
         return 'bg-blue-100 text-blue-700';
+      case 'confirmed':
+        return 'bg-indigo-100 text-indigo-700';
       case 'in-progress':
         return 'bg-yellow-100 text-yellow-700';
       case 'completed':
@@ -191,40 +261,40 @@ export default function AdminConsultationsPage() {
           </div>
 
           {/* Status Filter */}
-          <div className="flex gap-2">
-            {(['all', 'scheduled', 'in-progress', 'completed', 'cancelled'] as const).map((status) => (
+          <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+            {['all', 'pending', 'confirmed', 'in-progress', 'completed', 'cancelled'].map((status) => (
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  filterStatus === status
-                    ? 'bg-[#001F3F] text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${filterStatus === status
+                  ? 'bg-[#001F3F] text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
               >
                 {status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ')}
               </button>
             ))}
           </div>
+
         </div>
       </div>
 
-      {/* Consultations Table */}
+      {/* Content View */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+          <table className="w-full text-left">
+            <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Client</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Consultant</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Duration</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Client</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Service</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Consultant</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date & Time</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Duration</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-100">
               {filteredConsultations.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
@@ -233,21 +303,23 @@ export default function AdminConsultationsPage() {
                 </tr>
               ) : (
                 filteredConsultations.map((consultation) => (
-                  <tr key={consultation.id} className="hover:bg-gray-50">
+                  <tr key={consultation.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div>
                         <p className="font-semibold text-gray-900">{consultation.client_name}</p>
-                        <p className="text-sm text-gray-500">{consultation.client_email}</p>
+                        <p className="text-xs text-gray-500">{consultation.client_email}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-sm text-gray-900">{consultation.service_type}</p>
                     </td>
                     <td className="px-6 py-4">
-                      <p className="text-sm text-gray-700">{consultation.consultant}</p>
+                      <p className="text-sm text-gray-700">
+                        {admins.find(a => a.user_id === consultation.consultant_id)?.email || 'None'}
+                      </p>
                     </td>
                     <td className="px-6 py-4">
-                      <p className="text-sm text-gray-900">{new Date(consultation.date).toLocaleDateString()}</p>
+                      <p className="text-sm text-gray-900">{new Date(consultation.date).toLocaleDateString()} {consultation.time}</p>
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-sm text-gray-700">{consultation.duration} min</p>
@@ -257,19 +329,24 @@ export default function AdminConsultationsPage() {
                         {consultation.status.replace('-', ' ')}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {consultation.meet_link && (
+                          <a
+                            href={consultation.meet_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            title="Join Meeting"
+                          >
+                            <Video className="h-4 w-4" />
+                          </a>
+                        )}
                         <button
                           onClick={() => {
                             setSelectedConsultation(consultation);
                             setShowModal(true);
                           }}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          title="View details"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </button>
-                        <button
                           className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                           title="Edit"
                         >
@@ -307,58 +384,99 @@ export default function AdminConsultationsPage() {
               </div>
             </div>
             <div className="p-6 space-y-6">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Status Update */}
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Client Name</label>
-                  <p className="text-lg font-semibold text-gray-900">{selectedConsultation.client_name}</p>
+                  <label className="text-sm font-medium text-gray-500 block mb-2">Change Status</label>
+                  <select
+                    value={selectedConsultation.status}
+                    onChange={(e) => updateConsultation(selectedConsultation.id, { status: e.target.value as any })}
+                    className="w-full p-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-[#001F3F]/20"
+                  >
+                    {['pending', 'confirmed', 'in-progress', 'completed', 'cancelled'].map(s => (
+                      <option key={s} value={s}>{s.replace('-', ' ')}</option>
+                    ))}
+                  </select>
                 </div>
+
+                {/* Consultant Assignment */}
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Email</label>
-                  <p className="text-lg text-gray-900">{selectedConsultation.client_email}</p>
+                  <label className="text-sm font-medium text-gray-500 block mb-2">Assign Consultant</label>
+                  <select
+                    value={selectedConsultation.consultant_id}
+                    onChange={(e) => updateConsultation(selectedConsultation.id, { consultant_id: e.target.value })}
+                    className="w-full p-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-[#001F3F]/20"
+                  >
+                    <option value="">Unassigned</option>
+                    {admins.map(admin => (
+                      <option key={admin.user_id} value={admin.user_id}>{admin.email}</option>
+                    ))}
+                  </select>
                 </div>
+
+                {/* Fee Management */}
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Service Type</label>
-                  <p className="text-lg text-gray-900">{selectedConsultation.service_type}</p>
+                  <label className="text-sm font-medium text-gray-500 block mb-2">Consultation Fee (€)</label>
+                  <input
+                    type="number"
+                    value={selectedConsultation.fee}
+                    onChange={(e) => updateConsultation(selectedConsultation.id, { fee: Number(e.target.value) })}
+                    className="w-full p-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-[#001F3F]/20 font-bold text-green-600"
+                  />
                 </div>
+
+                {/* Meeting Link */}
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Status</label>
-                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold mt-1 ${getStatusColor(selectedConsultation.status)}`}>
-                    {selectedConsultation.status}
-                  </span>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Date</label>
-                  <p className="text-lg text-gray-900">{new Date(selectedConsultation.date).toLocaleDateString()}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Duration</label>
-                  <p className="text-lg text-gray-900">{selectedConsultation.duration} minutes</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Consultant</label>
-                  <p className="text-lg text-gray-900">{selectedConsultation.consultant}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Fee</label>
-                  <p className="text-lg font-semibold text-green-600">${selectedConsultation.fee}</p>
+                  <label className="text-sm font-medium text-gray-500 block mb-2">Meeting Link (Join)</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="https://..."
+                      value={selectedConsultation.meet_link}
+                      onChange={(e) => updateConsultation(selectedConsultation.id, { meet_link: e.target.value })}
+                      className="flex-1 p-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-[#001F3F]/20 text-sm"
+                    />
+                    {selectedConsultation.meet_link && (
+                      <a
+                        href={selectedConsultation.meet_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                      >
+                        <Eye className="h-5 w-5" />
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
-              {selectedConsultation.notes && (
+
+              {/* Notes Sections */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Notes</label>
-                  <p className="text-gray-900 mt-1 p-4 bg-gray-50 rounded-lg">{selectedConsultation.notes}</p>
+                  <label className="text-sm font-medium text-gray-500 block mb-2">Client Notes</label>
+                  <div className="p-4 bg-gray-50 rounded-lg text-sm text-gray-700 min-h-[100px]">
+                    {selectedConsultation.notes || 'No client notes provided.'}
+                  </div>
                 </div>
-              )}
+                <div>
+                  <label className="text-sm font-medium text-gray-500 block mb-2">Internal Admin Notes</label>
+                  <textarea
+                    rows={4}
+                    value={selectedConsultation.internal_notes}
+                    onChange={(e) => updateConsultation(selectedConsultation.id, { internal_notes: e.target.value })}
+                    placeholder="Add internal notes for consultants..."
+                    className="w-full p-3 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-[#001F3F]/20 text-sm"
+                  />
+                </div>
+              </div>
             </div>
             <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-6 py-2 bg-[#001F3F] text-white rounded-lg hover:bg-[#003366] transition-colors"
+                disabled={isSaving}
               >
-                Close
-              </button>
-              <button className="px-6 py-2 bg-[#001F3F] text-white rounded-lg hover:bg-[#003366] transition-colors">
-                Edit Consultation
+                {isSaving ? 'Saving...' : 'Done'}
               </button>
             </div>
           </div>
