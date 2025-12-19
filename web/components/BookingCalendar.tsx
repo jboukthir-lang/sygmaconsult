@@ -11,18 +11,20 @@ const DEFAULT_TIME_SLOTS = [
     "09:00", "10:00", "11:00", "14:00", "15:00", "16:00"
 ];
 
-interface ConsultationType {
+interface AppointmentType {
     id: string;
     name_fr: string;
     name_ar: string;
     name_en: string;
-    description_fr: string;
-    description_ar: string;
-    description_en: string;
+    description_fr?: string;
+    description_ar?: string;
+    description_en?: string;
     duration: number;
     price: number;
+    color?: string;
     is_online_available: boolean;
     is_onsite_available: boolean;
+    is_active: boolean;
 }
 
 export default function BookingCalendar() {
@@ -31,7 +33,7 @@ export default function BookingCalendar() {
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
     const [step, setStep] = useState(1);
-    const [consultationTypes, setConsultationTypes] = useState<ConsultationType[]>([]);
+    const [appointmentTypes, setAppointmentTypes] = useState<AppointmentType[]>([]);
     const [timeSlots, setTimeSlots] = useState<string[]>(DEFAULT_TIME_SLOTS);
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [isLoading, setIsLoading] = useState(false);
@@ -40,14 +42,14 @@ export default function BookingCalendar() {
     const [formData, setFormData] = useState({
         name: user?.displayName || '',
         email: user?.email || '',
-        topic: '',
+        appointmentTypeId: '',
         is_online: true,
         notes: ''
     });
 
-    // Load consultation types and time slots from database
+    // Load appointment types and time slots from database
     useEffect(() => {
-        loadConsultationTypes();
+        loadAppointmentTypes();
         loadTimeSlots();
     }, []);
 
@@ -62,21 +64,33 @@ export default function BookingCalendar() {
         }
     }, [user]);
 
-    async function loadConsultationTypes() {
+    async function loadAppointmentTypes() {
         try {
-            const { data, error } = await supabase
-                .from('consultation_types')
+            // Try appointment_types first (unified table)
+            let { data, error } = await supabase
+                .from('appointment_types')
                 .select('*')
                 .eq('is_active', true)
                 .order('name_fr');
 
+            // Fallback to consultation_types if appointment_types doesn't exist
+            if (error && error.code === '42P01') {
+                const result = await supabase
+                    .from('consultation_types')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('name_fr');
+                data = result.data;
+                error = result.error;
+            }
+
             if (error) throw error;
             if (data && data.length > 0) {
-                setConsultationTypes(data);
-                setFormData(prev => ({ ...prev, topic: data[0].id }));
+                setAppointmentTypes(data);
+                setFormData(prev => ({ ...prev, appointmentTypeId: data[0].id }));
             }
         } catch (error) {
-            console.error('Error loading consultation types:', error);
+            console.error('Error loading appointment types:', error);
         } finally {
             setLoadingData(false);
         }
@@ -116,9 +130,9 @@ export default function BookingCalendar() {
             const day = String(selectedDate.getDate()).padStart(2, '0');
             const formattedDate = `${year}-${month}-${day}`;
 
-            // Get selected consultation type details
-            const selectedConsultation = consultationTypes.find(c => c.id === formData.topic);
-            const consultationPrice = selectedConsultation?.price || 0;
+            // Get selected appointment type details
+            const selectedAppointment = appointmentTypes.find((apt: AppointmentType) => apt.id === formData.appointmentTypeId);
+            const appointmentPrice = selectedAppointment?.price || 0;
 
             const response = await fetch('/api/booking', {
                 method: 'POST',
@@ -129,24 +143,25 @@ export default function BookingCalendar() {
                     name: formData.name,
                     email: formData.email,
                     topic: language === 'fr'
-                        ? selectedConsultation?.name_fr
+                        ? selectedAppointment?.name_fr
                         : language === 'ar'
-                            ? selectedConsultation?.name_ar
-                            : selectedConsultation?.name_en,
+                            ? selectedAppointment?.name_ar
+                            : selectedAppointment?.name_en,
                     date: formattedDate,
                     time: selectedTime,
                     user_id: user?.uid || null,
-                    duration: selectedConsultation?.duration || 30,
+                    duration: selectedAppointment?.duration || 30,
                     appointment_type: 'consultation',
+                    appointment_type_id: formData.appointmentTypeId,
                     specialization: language === 'fr'
-                        ? selectedConsultation?.name_fr
+                        ? selectedAppointment?.name_fr
                         : language === 'ar'
-                            ? selectedConsultation?.name_ar
-                            : selectedConsultation?.name_en,
+                            ? selectedAppointment?.name_ar
+                            : selectedAppointment?.name_en,
                     is_online: formData.is_online,
                     notes: formData.notes,
-                    price: consultationPrice,
-                    payment_status: consultationPrice > 0 ? 'pending' : 'free'
+                    price: appointmentPrice,
+                    payment_status: appointmentPrice > 0 ? 'pending' : 'free'
                 }),
             });
 
@@ -158,8 +173,8 @@ export default function BookingCalendar() {
             const result = await response.json();
             console.log('Booking created:', result);
 
-            // If consultation has a price, redirect to Stripe checkout
-            if (consultationPrice > 0 && result.booking?.id) {
+            // If appointment has a price, redirect to Stripe checkout
+            if (appointmentPrice > 0 && result.booking?.id) {
                 const checkoutResponse = await fetch('/api/stripe/create-checkout', {
                     method: 'POST',
                     headers: {
@@ -374,10 +389,10 @@ export default function BookingCalendar() {
                             <select
                                 required
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent outline-none"
-                                value={formData.topic}
-                                onChange={e => setFormData({ ...formData, topic: e.target.value })}
+                                value={formData.appointmentTypeId}
+                                onChange={e => setFormData({ ...formData, appointmentTypeId: e.target.value })}
                             >
-                                {consultationTypes.map(type => (
+                                {appointmentTypes.map((type: AppointmentType) => (
                                     <option key={type.id} value={type.id}>
                                         {language === 'fr' ? type.name_fr : language === 'ar' ? type.name_ar : type.name_en}
                                         {` - ${type.duration} min - ${type.price}€`}
@@ -426,7 +441,7 @@ export default function BookingCalendar() {
                         </div>
 
                         {/* Price Display */}
-                        {consultationTypes.find(c => c.id === formData.topic)?.price && consultationTypes.find(c => c.id === formData.topic)!.price > 0 && (
+                        {appointmentTypes.find((apt: AppointmentType) => apt.id === formData.appointmentTypeId)?.price && appointmentTypes.find((apt: AppointmentType) => apt.id === formData.appointmentTypeId)!.price > 0 && (
                             <div className="bg-gradient-to-r from-[#D4AF37]/10 to-[#001F3F]/10 p-4 rounded-xl border-2 border-[#D4AF37]/30">
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -434,7 +449,7 @@ export default function BookingCalendar() {
                                             {language === 'ar' ? 'السعر الإجمالي' : language === 'fr' ? 'Prix Total' : 'Total Price'}
                                         </p>
                                         <p className="text-3xl font-bold text-[#001F3F]">
-                                            {consultationTypes.find(c => c.id === formData.topic)?.price}€
+                                            {appointmentTypes.find((apt: AppointmentType) => apt.id === formData.appointmentTypeId)?.price}€
                                         </p>
                                     </div>
                                     <div className="text-right">
@@ -463,7 +478,7 @@ export default function BookingCalendar() {
                                 {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
                                 {isLoading
                                     ? t.booking.step2.processing
-                                    : consultationTypes.find(c => c.id === formData.topic)?.price && consultationTypes.find(c => c.id === formData.topic)!.price > 0
+                                    : appointmentTypes.find((apt: AppointmentType) => apt.id === formData.appointmentTypeId)?.price && appointmentTypes.find((apt: AppointmentType) => apt.id === formData.appointmentTypeId)!.price > 0
                                         ? (language === 'ar' ? 'المتابعة للدفع' : language === 'fr' ? 'Continuer au paiement' : 'Continue to Payment')
                                         : t.booking.step2.confirm
                                 }
@@ -485,7 +500,7 @@ export default function BookingCalendar() {
                             <p><strong>{t.booking.step3.date_label}:</strong> {selectedDate?.toLocaleDateString(language)}</p>
                             <p><strong>{t.booking.step3.time_label}:</strong> {selectedTime} (CET)</p>
                             <p><strong>{t.booking.step3.topic_label}:</strong> {
-                                consultationTypes.find(c => c.id === formData.topic)?.[`name_${language}` as keyof ConsultationType]
+                                appointmentTypes.find((apt: AppointmentType) => apt.id === formData.appointmentTypeId)?.[`name_${language}` as keyof AppointmentType]
                             }</p>
                             <p><strong>{t.booking.step3.type_label}:</strong> {formData.is_online ? t.booking.sidebar.online : t.booking.sidebar.onsite}</p>
                         </div>
