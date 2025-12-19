@@ -17,8 +17,8 @@ export default function LegalPage() {
                     </p>
                     <p className="mt-4">
                         <strong>Headquarters:</strong><br />
-                        123 Avenue des Champs-Élysées<br />
-                        75008 Paris, France
+                        6 rue Paul Verlaine<br />
+                        93130 Noisy-le-Sec, France
                     </p>
                     <p className="mt-4">
                         <strong>Email:</strong> contact@sygma-consult.com<br />

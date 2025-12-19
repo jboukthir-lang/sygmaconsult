@@ -58,7 +58,7 @@ export default function Footer() {
                             <li className="flex items-start gap-3">
                                 <MapPin className="h-5 w-5 text-[#D4AF37] shrink-0" />
                                 <span>
-                                    <strong>{t.footer.address_paris}:</strong> 123 Avenue des Champs-Élysées, 75008 Paris<br />
+                                    <strong>{t.footer.address_paris}:</strong> 6 rue Paul Verlaine, 93130 Noisy-le-Sec<br />
                                     <strong>{t.footer.address_tunis}:</strong> Les Berges du Lac II, 1053 Tunis
                                 </span>
                             </li>
