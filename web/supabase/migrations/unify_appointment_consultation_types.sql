@@ -15,31 +15,67 @@ CREATE TABLE IF NOT EXISTS appointment_types (
     price DECIMAL(10, 2) DEFAULT 0,
     color VARCHAR(20) DEFAULT '#3B82F6',
     is_active BOOLEAN DEFAULT true,
-    is_online_available BOOLEAN DEFAULT true,
-    is_onsite_available BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
 );
 
+-- 1.1 إضافة الأعمدة الجديدة إذا لم تكن موجودة
+ALTER TABLE appointment_types
+ADD COLUMN IF NOT EXISTS is_online_available BOOLEAN DEFAULT true,
+ADD COLUMN IF NOT EXISTS is_onsite_available BOOLEAN DEFAULT true;
+
 -- 2. نقل البيانات من consultation_types إلى appointment_types (إذا كان موجوداً)
 DO $$
+DECLARE
+    has_online_col BOOLEAN;
 BEGIN
+    -- التحقق من وجود جدول consultation_types
     IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'consultation_types') THEN
-        INSERT INTO appointment_types (
-            name_fr, name_ar, name_en,
-            description_fr, description_ar, description_en,
-            duration, price,
-            is_active, is_online_available, is_onsite_available,
-            created_at, updated_at
-        )
-        SELECT
-            name_fr, name_ar, name_en,
-            description_fr, description_ar, description_en,
-            duration, price,
-            is_active, is_online_available, is_onsite_available,
-            created_at, updated_at
-        FROM consultation_types
-        ON CONFLICT DO NOTHING;
+        -- التحقق من وجود عمود is_online_available في consultation_types
+        SELECT EXISTS (
+            SELECT 1 FROM information_schema.columns
+            WHERE table_name = 'consultation_types'
+            AND column_name = 'is_online_available'
+        ) INTO has_online_col;
+
+        -- نسخ البيانات بناءً على الأعمدة المتاحة
+        IF has_online_col THEN
+            INSERT INTO appointment_types (
+                name_fr, name_ar, name_en,
+                description_fr, description_ar, description_en,
+                duration, price, is_active,
+                is_online_available, is_onsite_available,
+                created_at, updated_at
+            )
+            SELECT
+                name_fr, name_ar, name_en,
+                description_fr, description_ar, description_en,
+                duration, price, is_active,
+                is_online_available, is_onsite_available,
+                created_at, updated_at
+            FROM consultation_types
+            WHERE NOT EXISTS (
+                SELECT 1 FROM appointment_types apt
+                WHERE apt.name_en = consultation_types.name_en
+            );
+        ELSE
+            INSERT INTO appointment_types (
+                name_fr, name_ar, name_en,
+                description_fr, description_ar, description_en,
+                duration, price, is_active,
+                created_at, updated_at
+            )
+            SELECT
+                name_fr, name_ar, name_en,
+                description_fr, description_ar, description_en,
+                duration, price, is_active,
+                created_at, updated_at
+            FROM consultation_types
+            WHERE NOT EXISTS (
+                SELECT 1 FROM appointment_types apt
+                WHERE apt.name_en = consultation_types.name_en
+            );
+        END IF;
     END IF;
 END $$;
 
