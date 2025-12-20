@@ -220,8 +220,12 @@ CREATE TABLE IF NOT EXISTS calendar_settings (
 );
 
 -- 11. إضافة إعدادات افتراضية للكالندر إذا لم تكن موجودة
-INSERT INTO calendar_settings DEFAULT VALUES
-ON CONFLICT DO NOTHING;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM calendar_settings LIMIT 1) THEN
+        INSERT INTO calendar_settings DEFAULT VALUES;
+    END IF;
+END $$;
 
 -- 12. تحديث timestamp تلقائياً
 CREATE OR REPLACE FUNCTION update_updated_at_column()
