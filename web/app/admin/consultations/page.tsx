@@ -152,6 +152,30 @@ export default function AdminConsultationsPage() {
     }
   }
 
+  async function handleDeleteConsultation(id: string) {
+    if (!confirm('Are you sure you want to delete this consultation? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      // Remove from local state
+      setConsultations(prev => prev.filter(c => c.id !== id));
+      if (showModal && selectedConsultation?.id === id) {
+        setShowModal(false);
+      }
+    } catch (err) {
+      console.error('Error deleting consultation:', err);
+      alert('Failed to delete consultation');
+    }
+  }
+
   const filteredConsultations = consultations.filter(consultation => {
     const matchesSearch =
       consultation.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -207,7 +231,28 @@ export default function AdminConsultationsPage() {
           <h1 className="text-3xl font-bold text-[#001F3F]">Consultations</h1>
           <p className="text-gray-600 mt-1">Manage all consultation sessions</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-[#001F3F] text-white rounded-lg hover:bg-[#003366] transition-colors">
+        <button
+          onClick={() => {
+            setSelectedConsultation({
+              id: '',
+              client_name: '',
+              client_email: '',
+              service_type: '',
+              status: 'pending',
+              consultant_id: '',
+              date: new Date().toISOString().split('T')[0],
+              time: '09:00',
+              duration: 60,
+              fee: 0,
+              notes: '',
+              internal_notes: '',
+              meet_link: '',
+              created_at: new Date().toISOString(),
+            });
+            setShowModal(true);
+          }}
+          className="flex items-center gap-2 px-4 py-2 bg-[#001F3F] text-white rounded-lg hover:bg-[#003366] transition-colors"
+        >
           <Plus className="h-5 w-5" />
           New Consultation
         </button>
@@ -353,6 +398,7 @@ export default function AdminConsultationsPage() {
                           <Edit className="h-4 w-4" />
                         </button>
                         <button
+                          onClick={() => handleDeleteConsultation(consultation.id)}
                           className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Delete"
                         >

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { LayoutDashboard, Calendar, MessageSquare, Users, BarChart3, FileText, Briefcase, LogOut, Bell, Globe, Settings, Clock, Menu, X, Image as ImageIcon, FileEdit } from 'lucide-react';
+import { LayoutDashboard, Calendar, MessageSquare, Users, BarChart3, FileText, Briefcase, LogOut, Bell, Globe, Settings, Clock, Menu, X, Image as ImageIcon, FileEdit, ShoppingBag } from 'lucide-react';
 import { t } from '@/lib/translations';
 import { useState } from 'react';
 
@@ -60,6 +60,11 @@ export default function AdminSidebar() {
       title: language === 'ar' ? 'المنشورات' : language === 'fr' ? 'Articles' : 'Posts',
       href: '/admin/posts',
       icon: FileEdit,
+    },
+    {
+      title: language === 'ar' ? 'الخدمات' : language === 'fr' ? 'Services' : 'Services',
+      href: '/admin/services',
+      icon: ShoppingBag,
     },
     {
       title: language === 'ar' ? 'صورة الصفحة الرئيسية' : language === 'fr' ? 'Image d\'accueil' : 'Hero Image',
