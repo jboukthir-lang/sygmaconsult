@@ -1,13 +1,20 @@
 import Stripe from 'stripe';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not defined in environment variables');
-}
+// Initialize Stripe only if the secret key is available
+// This allows the app to build even if Stripe is not configured
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY || '';
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-11-20.acacia',
-  typescript: true,
-});
+export const stripe = stripeSecretKey
+  ? new Stripe(stripeSecretKey, {
+      apiVersion: '2024-11-20.acacia',
+      typescript: true,
+    })
+  : null;
+
+// Helper function to check if Stripe is configured
+export function isStripeConfigured(): boolean {
+  return !!stripeSecretKey;
+}
 
 export const CURRENCY = 'eur';
 

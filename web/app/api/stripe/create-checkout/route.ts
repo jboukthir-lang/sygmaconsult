@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { stripe, formatAmountForStripe } from '@/lib/stripe';
+import { stripe, formatAmountForStripe, isStripeConfigured } from '@/lib/stripe';
 import { supabase } from '@/lib/supabase';
 
 export async function POST(req: NextRequest) {
   try {
+    // Check if Stripe is configured
+    if (!isStripeConfigured() || !stripe) {
+      return NextResponse.json(
+        { error: 'Payment system is not configured. Please contact support.' },
+        { status: 503 }
+      );
+    }
+
     const { bookingId } = await req.json();
 
     if (!bookingId) {

@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { stripe, formatAmountFromStripe } from '@/lib/stripe';
+import { stripe, formatAmountFromStripe, isStripeConfigured } from '@/lib/stripe';
 import { supabase } from '@/lib/supabase';
 import Stripe from 'stripe';
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
 
 export async function POST(req: NextRequest) {
+  // Check if Stripe is configured
+  if (!isStripeConfigured() || !stripe || !webhookSecret) {
+    return NextResponse.json(
+      { error: 'Payment system is not configured' },
+      { status: 503 }
+    );
+  }
+
   const body = await req.text();
   const signature = req.headers.get('stripe-signature');
 
