@@ -80,43 +80,48 @@ BEGIN
 END $$;
 
 -- 3. إدراج أنواع افتراضية إذا كان الجدول فارغاً
-INSERT INTO appointment_types (name_fr, name_ar, name_en, description_fr, description_ar, description_en, duration, price, color) VALUES
-('Consultation Stratégique', 'استشارة استراتيجية', 'Strategic Consultation',
- 'Consultation pour la stratégie d''entreprise et développement',
- 'استشارة حول استراتيجية الأعمال والتطوير',
- 'Business strategy and development consultation',
- 60, 150.00, '#8B5CF6'),
+DO $$
+BEGIN
+    -- Only insert if table is empty or these specific types don't exist
+    IF NOT EXISTS (SELECT 1 FROM appointment_types LIMIT 1) THEN
+        INSERT INTO appointment_types (name_fr, name_ar, name_en, description_fr, description_ar, description_en, duration, price, color) VALUES
+        ('Consultation Stratégique', 'استشارة استراتيجية', 'Strategic Consultation',
+         'Consultation pour la stratégie d''entreprise et développement',
+         'استشارة حول استراتيجية الأعمال والتطوير',
+         'Business strategy and development consultation',
+         60, 150.00, '#8B5CF6'),
 
-('Consultation Financière', 'استشارة مالية', 'Financial Consultation',
- 'Conseil en gestion financière et comptabilité',
- 'استشارة في الإدارة المالية والمحاسبة',
- 'Financial management and accounting advice',
- 45, 120.00, '#10B981'),
+        ('Consultation Financière', 'استشارة مالية', 'Financial Consultation',
+         'Conseil en gestion financière et comptabilité',
+         'استشارة في الإدارة المالية والمحاسبة',
+         'Financial management and accounting advice',
+         45, 120.00, '#10B981'),
 
-('Consultation RH', 'استشارة موارد بشرية', 'HR Consultation',
- 'Gestion des ressources humaines et recrutement',
- 'إدارة الموارد البشرية والتوظيف',
- 'Human resources and recruitment management',
- 45, 100.00, '#F59E0B'),
+        ('Consultation RH', 'استشارة موارد بشرية', 'HR Consultation',
+         'Gestion des ressources humaines et recrutement',
+         'إدارة الموارد البشرية والتوظيف',
+         'Human resources and recruitment management',
+         45, 100.00, '#F59E0B'),
 
-('Consultation Juridique', 'استشارة قانونية', 'Legal Consultation',
- 'Conformité légale et aspects juridiques',
- 'الامتثال القانوني والجوانب القانونية',
- 'Legal compliance and advisory',
- 60, 180.00, '#EF4444'),
+        ('Consultation Juridique', 'استشارة قانونية', 'Legal Consultation',
+         'Conformité légale et aspects juridiques',
+         'الامتثال القانوني والجوانب القانونية',
+         'Legal compliance and advisory',
+         60, 180.00, '#EF4444'),
 
-('Consultation Marketing', 'استشارة تسويقية', 'Marketing Consultation',
- 'Stratégie marketing et communication digitale',
- 'استراتيجية التسويق والاتصال الرقمي',
- 'Marketing strategy and digital communication',
- 45, 110.00, '#3B82F6'),
+        ('Consultation Marketing', 'استشارة تسويقية', 'Marketing Consultation',
+         'Stratégie marketing et communication digitale',
+         'استراتيجية التسويق والاتصال الرقمي',
+         'Marketing strategy and digital communication',
+         45, 110.00, '#3B82F6'),
 
-('Session de Formation', 'جلسة تدريبية', 'Training Session',
- 'Formation professionnelle personnalisée',
- 'تدريب مهني مخصص',
- 'Customized professional training',
- 90, 200.00, '#06B6D4')
-ON CONFLICT DO NOTHING;
+        ('Session de Formation', 'جلسة تدريبية', 'Training Session',
+         'Formation professionnelle personnalisée',
+         'تدريب مهني مخصص',
+         'Customized professional training',
+         90, 200.00, '#06B6D4');
+    END IF;
+END $$;
 
 -- 4. التأكد من وجود جميع الحقول الضرورية في جدول bookings
 ALTER TABLE bookings
