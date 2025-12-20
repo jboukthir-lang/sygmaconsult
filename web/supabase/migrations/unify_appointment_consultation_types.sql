@@ -159,18 +159,32 @@ CREATE TABLE IF NOT EXISTS appointments (
     client_phone VARCHAR(50),
     status VARCHAR(50) DEFAULT 'pending',
     notes TEXT,
-    booking_id UUID REFERENCES bookings(id),
+    booking_id UUID,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
 );
 
--- 8. إنشاء فهارس لجدول appointments
+-- 8. إضافة foreign key constraint لـ booking_id إذا لم يكن موجوداً
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.table_constraints
+        WHERE constraint_name = 'appointments_booking_id_fkey'
+        AND table_name = 'appointments'
+    ) THEN
+        ALTER TABLE appointments
+        ADD CONSTRAINT appointments_booking_id_fkey
+        FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE SET NULL;
+    END IF;
+END $$;
+
+-- 9. إنشاء فهارس لجدول appointments
 CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(appointment_date);
 CREATE INDEX IF NOT EXISTS idx_appointments_type ON appointments(appointment_type_id);
 CREATE INDEX IF NOT EXISTS idx_appointments_status ON appointments(status);
 CREATE INDEX IF NOT EXISTS idx_appointments_booking ON appointments(booking_id);
 
--- 9. إنشاء جدول calendar_settings
+-- 10. إنشاء جدول calendar_settings
 CREATE TABLE IF NOT EXISTS calendar_settings (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     monday_enabled BOOLEAN DEFAULT true,
@@ -209,11 +223,11 @@ CREATE TABLE IF NOT EXISTS calendar_settings (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
 );
 
--- 10. إضافة إعدادات افتراضية للكالندر إذا لم تكن موجودة
+-- 11. إضافة إعدادات افتراضية للكالندر إذا لم تكن موجودة
 INSERT INTO calendar_settings DEFAULT VALUES
 ON CONFLICT DO NOTHING;
 
--- 11. تحديث timestamp تلقائياً
+-- 12. تحديث timestamp تلقائياً
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -222,7 +236,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- 12. إضافة Triggers للتحديث التلقائي
+-- 13. إضافة Triggers للتحديث التلقائي
 DROP TRIGGER IF EXISTS update_appointment_types_updated_at ON appointment_types;
 CREATE TRIGGER update_appointment_types_updated_at
     BEFORE UPDATE ON appointment_types
@@ -243,7 +257,7 @@ CREATE TRIGGER update_calendar_settings_updated_at
     BEFORE UPDATE ON calendar_settings
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- 13. Row Level Security (RLS)
+-- 14. Row Level Security (RLS)
 ALTER TABLE appointment_types ENABLE ROW LEVEL SECURITY;
 ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE calendar_settings ENABLE ROW LEVEL SECURITY;
@@ -293,7 +307,7 @@ CREATE POLICY "Allow admin update calendar_settings" ON calendar_settings
         )
     );
 
--- 14. إضافة تعليقات توضيحية
+-- 15. إضافة تعليقات توضيحية
 COMMENT ON TABLE appointment_types IS 'أنواع المواعيد والاستشارات المتاحة مع الأسعار';
 COMMENT ON TABLE appointments IS 'جدول المواعيد المرتبط بالكالندر';
 COMMENT ON TABLE calendar_settings IS 'إعدادات الكالندر وساعات العمل';
@@ -301,7 +315,7 @@ COMMENT ON COLUMN bookings.appointment_type_id IS 'ربط الحجز بنوع ا
 COMMENT ON COLUMN bookings.price IS 'سعر الاستشارة أو الخدمة';
 COMMENT ON COLUMN bookings.payment_status IS 'حالة الدفع: pending, paid, refunded, free';
 
--- 15. عرض ملخص النتائج
+-- 16. عرض ملخص النتائج
 DO $$
 DECLARE
     types_count INTEGER;
