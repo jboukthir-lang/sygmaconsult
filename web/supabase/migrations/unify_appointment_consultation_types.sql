@@ -25,59 +25,8 @@ ADD COLUMN IF NOT EXISTS is_online_available BOOLEAN DEFAULT true,
 ADD COLUMN IF NOT EXISTS is_onsite_available BOOLEAN DEFAULT true;
 
 -- 2. نقل البيانات من consultation_types إلى appointment_types (إذا كان موجوداً)
-DO $$
-DECLARE
-    has_online_col BOOLEAN;
-BEGIN
-    -- التحقق من وجود جدول consultation_types
-    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'consultation_types') THEN
-        -- التحقق من وجود عمود is_online_available في consultation_types
-        SELECT EXISTS (
-            SELECT 1 FROM information_schema.columns
-            WHERE table_name = 'consultation_types'
-            AND column_name = 'is_online_available'
-        ) INTO has_online_col;
-
-        -- نسخ البيانات بناءً على الأعمدة المتاحة
-        IF has_online_col THEN
-            INSERT INTO appointment_types (
-                name_fr, name_ar, name_en,
-                description_fr, description_ar, description_en,
-                duration, price, is_active,
-                is_online_available, is_onsite_available,
-                created_at, updated_at
-            )
-            SELECT
-                ct.name_fr, ct.name_ar, ct.name_en,
-                ct.description_fr, ct.description_ar, ct.description_en,
-                ct.duration, ct.price, ct.is_active,
-                ct.is_online_available, ct.is_onsite_available,
-                ct.created_at, ct.updated_at
-            FROM consultation_types ct
-            WHERE NOT EXISTS (
-                SELECT 1 FROM appointment_types apt
-                WHERE apt.name_en::text = ct.name_en::text
-            );
-        ELSE
-            INSERT INTO appointment_types (
-                name_fr, name_ar, name_en,
-                description_fr, description_ar, description_en,
-                duration, price, is_active,
-                created_at, updated_at
-            )
-            SELECT
-                ct.name_fr, ct.name_ar, ct.name_en,
-                ct.description_fr, ct.description_ar, ct.description_en,
-                ct.duration, ct.price, ct.is_active,
-                ct.created_at, ct.updated_at
-            FROM consultation_types ct
-            WHERE NOT EXISTS (
-                SELECT 1 FROM appointment_types apt
-                WHERE apt.name_en::text = ct.name_en::text
-            );
-        END IF;
-    END IF;
-END $$;
+-- Skip this step - we'll use default data instead
+-- If you have existing consultation_types data, you can migrate it manually
 
 -- 3. إدراج أنواع افتراضية إذا كان الجدول فارغاً
 DO $$
