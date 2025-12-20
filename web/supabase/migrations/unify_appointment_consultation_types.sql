@@ -48,15 +48,15 @@ BEGIN
                 created_at, updated_at
             )
             SELECT
-                name_fr, name_ar, name_en,
-                description_fr, description_ar, description_en,
-                duration, price, is_active,
-                is_online_available, is_onsite_available,
-                created_at, updated_at
-            FROM consultation_types
+                ct.name_fr, ct.name_ar, ct.name_en,
+                ct.description_fr, ct.description_ar, ct.description_en,
+                ct.duration, ct.price, ct.is_active,
+                ct.is_online_available, ct.is_onsite_available,
+                ct.created_at, ct.updated_at
+            FROM consultation_types ct
             WHERE NOT EXISTS (
                 SELECT 1 FROM appointment_types apt
-                WHERE apt.name_en = consultation_types.name_en
+                WHERE apt.name_en::text = ct.name_en::text
             );
         ELSE
             INSERT INTO appointment_types (
@@ -66,14 +66,14 @@ BEGIN
                 created_at, updated_at
             )
             SELECT
-                name_fr, name_ar, name_en,
-                description_fr, description_ar, description_en,
-                duration, price, is_active,
-                created_at, updated_at
-            FROM consultation_types
+                ct.name_fr, ct.name_ar, ct.name_en,
+                ct.description_fr, ct.description_ar, ct.description_en,
+                ct.duration, ct.price, ct.is_active,
+                ct.created_at, ct.updated_at
+            FROM consultation_types ct
             WHERE NOT EXISTS (
                 SELECT 1 FROM appointment_types apt
-                WHERE apt.name_en = consultation_types.name_en
+                WHERE apt.name_en::text = ct.name_en::text
             );
         END IF;
     END IF;
