@@ -165,18 +165,8 @@ CREATE TABLE IF NOT EXISTS appointments (
 );
 
 -- 8. إضافة foreign key constraint لـ booking_id إذا لم يكن موجوداً
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1 FROM information_schema.table_constraints
-        WHERE constraint_name = 'appointments_booking_id_fkey'
-        AND table_name = 'appointments'
-    ) THEN
-        ALTER TABLE appointments
-        ADD CONSTRAINT appointments_booking_id_fkey
-        FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE SET NULL;
-    END IF;
-END $$;
+-- Note: We skip adding the FK constraint here because bookings table structure may vary
+-- The booking_id column exists for future use but won't enforce referential integrity initially
 
 -- 9. إنشاء فهارس لجدول appointments
 CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(appointment_date);
