@@ -172,7 +172,8 @@ CREATE TABLE IF NOT EXISTS appointments (
 CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(appointment_date);
 CREATE INDEX IF NOT EXISTS idx_appointments_type ON appointments(appointment_type_id);
 CREATE INDEX IF NOT EXISTS idx_appointments_status ON appointments(status);
-CREATE INDEX IF NOT EXISTS idx_appointments_booking ON appointments(booking_id);
+-- Skip index on booking_id as it may not be populated initially
+-- CREATE INDEX IF NOT EXISTS idx_appointments_booking ON appointments(booking_id);
 
 -- 10. إنشاء جدول calendar_settings
 CREATE TABLE IF NOT EXISTS calendar_settings (
